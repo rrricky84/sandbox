@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alex Rivera</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    body {
+      font-family: Helvetica, Arial, sans-serif;
+      background: #ffffff;
+      color: #111111;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 40px 24px;
+    }
+
+    .card {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .avatar {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #e8e8e8;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 600;
+      color: #555;
+      letter-spacing: -1px;
+    }
+
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .title {
+      font-size: 14px;
+      color: #888888;
+      font-weight: 400;
+      margin-bottom: 24px;
+      letter-spacing: 0.01em;
+    }
+
+    .divider {
+      width: 32px;
+      height: 1px;
+      background: #e0e0e0;
+      margin-bottom: 24px;
+    }
+
+    .bio {
+      font-size: 15px;
+      line-height: 1.65;
+      color: #444444;
+      margin-bottom: 36px;
+    }
+
+    .links {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .links a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #111111;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 8px 0;
+      border-bottom: 1px solid #f0f0f0;
+      transition: color 0.15s ease;
+    }
+
+    .links a:last-child {
+      border-bottom: none;
+    }
+
+    .links a:hover {
+      color: #555555;
+    }
+
+    .links a .arrow {
+      font-size: 12px;
+      color: #cccccc;
+      margin-left: auto;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .links a:hover .arrow {
+      transform: translateX(3px);
+      color: #aaaaaa;
+    }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <div class="avatar">AR</div>
+
+    <h1>Alex Rivera</h1>
+    <p class="title">Product Designer &amp; Front-End Developer</p>
+
+    <div class="divider"></div>
+
+    <p class="bio">
+      I design and build digital products that are simple, fast, and easy to use.
+      Currently focused on design systems and developer tooling. Based in San Francisco.
+    </p>
+
+    <nav class="links">
+      <a href="#">
+        Work
+        <span class="arrow">→</span>
+      </a>
+      <a href="#">
+        Writing
+        <span class="arrow">→</span>
+      </a>
+      <a href="#">
+        Contact
+        <span class="arrow">→</span>
+      </a>
+    </nav>
+  </main>
+</body>
+</html>
