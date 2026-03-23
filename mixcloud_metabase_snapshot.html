@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<!-- saved from url=(0240)file:///Users/ricky/Library/Application%20Support/Claude/local-agent-mode-sessions/ff87ec6e-30aa-41ad-bf2e-b1219d22be21/e45ba9ca-71df-4ba8-8ab4-65fd8c3c823a/local_c67e3467-1af7-49ac-8b6e-cb830ee4f14f/outputs/mixcloud-weekly-snapshot-v3.html -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mixcloud Weekly Snapshot — Metabase Subscription</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Lato', Helvetica, Arial, sans-serif;
+    background: #f0f0f0;
+    color: #4c5773;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .email-outer {
+    max-width: 680px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+  }
+
+  /* Header */
+  .mb-header {
+    background: #5000b9;
+    padding: 20px 28px;
+    color: white;
+  }
+  .mb-header-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .mb-header-subtitle {
+    font-size: 13px;
+    opacity: 0.8;
+    font-weight: 400;
+  }
+
+  /* Section text card */
+  .section-card {
+    padding: 18px 28px 8px;
+    border-top: 1px solid #eeecec;
+  }
+  .section-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: #4c5773;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .section-note {
+    font-size: 12.5px;
+    color: #949aab;
+    margin-top: 2px;
+  }
+
+  /* Trend card */
+  .trend-card {
+    padding: 16px 28px;
+    border-bottom: 1px solid #f4f4f4;
+    display: flex;
+    align-items: center;
+  }
+  .trend-card:last-child {
+    border-bottom: none;
+  }
+  .trend-info {
+    flex: 1;
+  }
+  .trend-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #696e7b;
+    margin-bottom: 4px;
+  }
+  .trend-value {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2e353b;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .trend-comparison {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 2px 0;
+  }
+  .trend-comparison .arrow { font-size: 14px; }
+  .trend-up { color: #84bb4c; }
+  .trend-down-bad { color: #ed6e6e; }
+  .trend-down-good { color: #84bb4c; }
+  .trend-flat { color: #949aab; }
+
+  .trend-prev-label {
+    font-size: 12px;
+    color: #b8bbc3;
+    margin-top: 2px;
+  }
+
+  /* Supporting sub-metric shown smaller beneath a main trend card */
+  .sub-metric {
+    padding: 6px 28px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    color: #949aab;
+    border-bottom: 1px solid #f4f4f4;
+  }
+  .sub-metric-label {
+    font-weight: 600;
+    color: #696e7b;
+  }
+  .sub-metric-value {
+    font-weight: 700;
+    color: #4c5773;
+  }
+  .sub-metric .trend-comparison {
+    font-size: 12px;
+    margin-top: 0;
+  }
+
+  /* Sparkline */
+  .trend-spark {
+    width: 100px;
+    height: 40px;
+    flex-shrink: 0;
+    margin-left: 20px;
+  }
+  .trend-spark svg {
+    width: 100%;
+    height: 100%;
+  }
+  .spark-timeframe {
+    font-size: 9px;
+    color: #c8cad0;
+    text-align: center;
+    margin-top: 2px;
+  }
+
+  /* Alert text card */
+  .alert-text-card {
+    padding: 14px 28px;
+    background: #fdf6ec;
+    border-left: 4px solid #f0b556;
+    margin: 0 28px 12px;
+    border-radius: 4px;
+    font-size: 13.5px;
+    color: #6e5a36;
+    line-height: 1.55;
+  }
+  .alert-text-card strong {
+    color: #5a4320;
+  }
+
+  /* Divider */
+  .section-divider {
+    height: 1px;
+    background: #eeecec;
+    margin: 4px 0;
+  }
+
+  /* Two-column trend row */
+  .trend-row {
+    display: flex;
+  }
+  .trend-row .trend-card {
+    flex: 1;
+  }
+  .trend-row .trend-card + .trend-card {
+    border-left: 1px solid #f4f4f4;
+  }
+
+  /* Logged-in vs logged-out bar visual */
+  .split-bar-card {
+    padding: 12px 28px 18px;
+    border-bottom: 1px solid #f4f4f4;
+  }
+  .split-bar-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #696e7b;
+    margin-bottom: 4px;
+  }
+  .split-bar-total {
+    font-size: 28px;
+    font-weight: 800;
+    color: #2e353b;
+    letter-spacing: -0.5px;
+    line-height: 1.1;
+  }
+  .split-bar-change {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 6px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .split-bar-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .split-bar-label {
+    width: 85px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #696e7b;
+    flex-shrink: 0;
+  }
+  .split-bar-track {
+    flex: 1;
+    background: #f0f0f0;
+    border-radius: 4px;
+    height: 18px;
+    overflow: hidden;
+    margin: 0 10px;
+  }
+  .split-bar-fill {
+    height: 100%;
+    border-radius: 4px;
+  }
+  .bar-logged-in { background: #ed8b8b; opacity: 0.7; }
+  .bar-logged-out { background: #8baed6; opacity: 0.7; }
+  .split-bar-count {
+    width: 60px;
+    font-size: 12px;
+    color: #696e7b;
+    text-align: right;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  /* Footer */
+  .mb-footer {
+    padding: 20px 28px;
+    background: #fafafa;
+    border-top: 1px solid #eeecec;
+    text-align: center;
+  }
+  .mb-footer p {
+    font-size: 12px;
+    color: #b0b0b0;
+    margin-bottom: 6px;
+  }
+  .mb-footer a {
+    color: #5000b9;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .mb-footer .mb-logo-text {
+    font-size: 11px;
+    color: #ccc;
+    margin-top: 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="email-outer">
+
+  <!-- Header -->
+  <div class="mb-header">
+    <div class="mb-header-title">Mixcloud Weekly Snapshot</div>
+    <div class="mb-header-subtitle">Week of 16 Mar – 22 Mar 2026</div>
+  </div>
+
+  <!-- ===== THINGS TO WATCH ===== -->
+  <div class="section-card">
+    <div class="section-label">Things to Watch</div>
+    <div class="section-note">Updated manually each week</div>
+  </div>
+
+  <div class="alert-text-card">
+    <strong>Stream duration dropping fast</strong> — avg down to ~100 min from ~310 last week. Third consecutive weekly decline.<br><br>
+    <strong>Pro trial starts near zero</strong> — collapsed since mid-Feb. Intentional change or broken flow?<br><br>
+    <strong>Confirmed human rate still sliding</strong> — 65%, down from 80% in Jan. Signup numbers may be inflated by spam.
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ===== USERBASE ===== -->
+  <div class="section-card">
+    <div class="section-label">Userbase</div>
+  </div>
+
+  <div class="trend-row">
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">New Creator Signups</div>
+        <div class="trend-value">4,800</div>
+        <div class="trend-comparison trend-down-bad">
+          <span class="arrow">↓</span> 6.3%
+        </div>
+        <div class="trend-prev-label">vs previous week: 5,120</div>
+      </div>
+      <div class="trend-spark">
+        <svg viewBox="0 0 100 40">
+          <polyline points="0,14 12,12 25,14 37,16 50,15 62,18 75,20 87,22 100,24" fill="none" stroke="#ed6e6e" stroke-width="2.5" stroke-linecap="round"></polyline>
+          <polygon points="0,14 12,12 25,14 37,16 50,15 62,18 75,20 87,22 100,24 100,40 0,40" fill="#ed6e6e" opacity="0.08"></polygon>
+        </svg>
+        <div class="spark-timeframe">last 8 weeks</div>
+      </div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">New Listener Signups</div>
+        <div class="trend-value">22,400</div>
+        <div class="trend-comparison trend-down-bad">
+          <span class="arrow">↓</span> 8.6%
+        </div>
+        <div class="trend-prev-label">vs previous week: 24,500</div>
+      </div>
+      <div class="trend-spark">
+        <svg viewBox="0 0 100 40">
+          <polyline points="0,10 12,8 25,12 37,14 50,16 62,14 75,20 87,24 100,28" fill="none" stroke="#ed6e6e" stroke-width="2.5" stroke-linecap="round"></polyline>
+          <polygon points="0,10 12,8 25,12 37,14 50,16 62,14 75,20 87,24 100,28 100,40 0,40" fill="#ed6e6e" opacity="0.08"></polygon>
+        </svg>
+        <div class="spark-timeframe">last 8 weeks</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Confirmed human rate as a supporting sub-metric -->
+  <div class="sub-metric">
+    <span class="sub-metric-label">Confirmed Human Rate:</span>
+    <span class="sub-metric-value">65%</span>
+    <span class="trend-comparison trend-down-bad" style="margin-top:0;"><span class="arrow">↓</span> 4 pts WoW</span>
+    <span style="color:#b8bbc3;">·</span>
+    <span style="color:#b8bbc3;">was 80% in Jan</span>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ===== CONTENT & ENGAGEMENT ===== -->
+  <div class="section-card">
+    <div class="section-label">Content &amp; Engagement</div>
+  </div>
+
+  <div class="trend-card">
+    <div class="trend-info">
+      <div class="trend-title">New Cloudcasts Published (weekly)</div>
+      <div class="trend-value">~44K</div>
+      <div class="trend-comparison trend-up">
+        <span class="arrow">↑</span> 2.3%
+      </div>
+      <div class="trend-prev-label">vs previous week: ~43K</div>
+    </div>
+    <div class="trend-spark">
+      <svg viewBox="0 0 100 40">
+        <polyline points="0,34 12,30 25,28 37,24 50,20 62,18 75,14 87,10 100,8" fill="none" stroke="#84bb4c" stroke-width="2.5" stroke-linecap="round"></polyline>
+        <polygon points="0,34 12,30 25,28 37,24 50,20 62,18 75,14 87,10 100,8 100,40 0,40" fill="#84bb4c" opacity="0.08"></polygon>
+      </svg>
+      <div class="spark-timeframe">last 8 weeks</div>
+    </div>
+  </div>
+
+  <!-- Daily Plays: Logged In vs Logged Out — rendered as a bar/number combo -->
+  <div class="split-bar-card">
+    <div class="split-bar-title">Daily Plays (avg this week)</div>
+    <div class="split-bar-total">~680K</div>
+    <div class="split-bar-change trend-up">
+      <span class="arrow">↑</span> 1.2% vs previous week
+    </div>
+
+    <div class="split-bar-row">
+      <div class="split-bar-label">Logged In</div>
+      <div class="split-bar-track"><div class="split-bar-fill bar-logged-in" style="width: 83%;"></div></div>
+      <div class="split-bar-count">~565K</div>
+    </div>
+    <div class="split-bar-row">
+      <div class="split-bar-label">Logged Out</div>
+      <div class="split-bar-track"><div class="split-bar-fill bar-logged-out" style="width: 17%;"></div></div>
+      <div class="split-bar-count">~115K</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ===== PRO ===== -->
+  <div class="section-card">
+    <div class="section-label">Pro</div>
+  </div>
+
+  <div class="trend-row">
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Active Pro Subscribers</div>
+        <div class="trend-value">38,604</div>
+        <div class="trend-comparison trend-up">
+          <span class="arrow">↑</span> 0.4%
+        </div>
+        <div class="trend-prev-label">vs previous week: 38,450</div>
+      </div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Active Pro Trials</div>
+        <div class="trend-value">9,957</div>
+        <div class="trend-comparison trend-down-bad">
+          <span class="arrow">↓</span> 3.8%
+        </div>
+        <div class="trend-prev-label">vs previous week: 10,350</div>
+      </div>
+      <div class="trend-spark">
+        <svg viewBox="0 0 100 40">
+          <polyline points="0,12 12,10 25,12 37,14 50,16 62,20 75,24 87,28 100,30" fill="none" stroke="#ed6e6e" stroke-width="2.5" stroke-linecap="round"></polyline>
+          <polygon points="0,12 12,10 25,12 37,14 50,16 62,20 75,24 87,28 100,30 100,40 0,40" fill="#ed6e6e" opacity="0.08"></polygon>
+        </svg>
+        <div class="spark-timeframe">last 8 weeks</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="trend-row">
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Pro Cancellations</div>
+        <div class="trend-value">520</div>
+        <div class="trend-comparison trend-flat">
+          <span class="arrow">→</span> 1.2%
+        </div>
+        <div class="trend-prev-label">vs previous week: 514</div>
+      </div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Pro Trial Conversion Rate</div>
+        <div class="trend-value">~3%</div>
+        <div class="trend-comparison trend-down-bad">
+          <span class="arrow">↓</span>
+        </div>
+        <div class="trend-prev-label">was ~50% in mid-2025</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ===== LIVE ===== -->
+  <div class="section-card">
+    <div class="section-label">Live</div>
+  </div>
+
+  <div class="trend-row">
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Streams Created (weekly)</div>
+        <div class="trend-value">~5,500</div>
+        <div class="trend-comparison trend-flat">
+          <span class="arrow">→</span> flat
+        </div>
+        <div class="trend-prev-label">vs previous week: ~5,480</div>
+      </div>
+    </div>
+
+    <div class="trend-card">
+      <div class="trend-info">
+        <div class="trend-title">Live Viewers (weekly)</div>
+        <div class="trend-value">~48K</div>
+        <div class="trend-comparison trend-flat">
+          <span class="arrow">→</span> 0.4%
+        </div>
+        <div class="trend-prev-label">vs previous week: ~47.8K</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="mb-footer">
+    <p>Sent from <a href="http://metabase.mixcloud.dev/">metabase.mixcloud.dev</a></p>
+    <p><a href="http://metabase.mixcloud.dev/">Open full dashboard</a> for platform breakdowns, 90-day trends, and deep-dives</p>
+    <div class="mb-logo-text">Made with Metabase</div>
+  </div>
+
+</div>
+
+
+
+</body></html>
