@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trackdrop vs Inflyte — Competitive Analysis</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: #000;
+    color: #fff;
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 60px 80px;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .slide.active { display: flex; }
+
+  /* Slide variants */
+  .slide.title-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .slide.section-slide {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  /* Typography */
+  h1 {
+    font-size: 3.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 32px;
+  }
+
+  h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #ccc;
+  }
+
+  p {
+    font-size: 1.3rem;
+    line-height: 1.5;
+    color: #bbb;
+    max-width: 800px;
+  }
+
+  .subtitle {
+    font-size: 1.5rem;
+    color: #888;
+    font-weight: 400;
+    margin-top: 12px;
+  }
+
+  .label {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  /* Lists */
+  ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  ul li {
+    font-size: 1.25rem;
+    line-height: 1.6;
+    padding: 6px 0;
+    padding-left: 24px;
+    position: relative;
+    color: #ddd;
+  }
+
+  ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+  }
+
+  /* Comparison table */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    width: 100%;
+    max-width: 1100px;
+  }
+
+  .compare-col h3 {
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding-bottom: 12px;
+    margin-bottom: 16px;
+  }
+
+  .compare-col.them h3 { color: #666; border-bottom: 2px solid #333; }
+  .compare-col.us h3 { color: #fff; border-bottom: 2px solid #fff; }
+
+  .compare-col.them li { color: #888; }
+  .compare-col.them li::before { background: #555; }
+  .compare-col.us li { color: #fff; }
+  .compare-col.us li::before { background: #fff; }
+
+  /* Stat callout */
+  .stat {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+
+  .stat-label {
+    font-size: 1.2rem;
+    color: #888;
+  }
+
+  .stats-row {
+    display: flex;
+    gap: 80px;
+    margin-top: 24px;
+  }
+
+  /* Quote */
+  blockquote {
+    font-size: 1.6rem;
+    font-style: italic;
+    color: #aaa;
+    border-left: 3px solid #444;
+    padding-left: 24px;
+    max-width: 800px;
+    line-height: 1.5;
+  }
+
+  blockquote cite {
+    display: block;
+    font-size: 1rem;
+    font-style: normal;
+    color: #666;
+    margin-top: 12px;
+  }
+
+  /* Grid for feature lists */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px 48px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .feature-grid .item {
+    padding: 12px 0;
+    border-bottom: 1px solid #222;
+  }
+
+  .feature-grid .item strong {
+    display: block;
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+
+  .feature-grid .item span {
+    font-size: 0.95rem;
+    color: #888;
+  }
+
+  /* Numbered list */
+  ol {
+    list-style: none;
+    counter-reset: steps;
+    padding: 0;
+  }
+
+  ol li {
+    counter-increment: steps;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    padding: 10px 0;
+    padding-left: 40px;
+    position: relative;
+    color: #ddd;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  ol li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #666;
+    width: 28px;
+    text-align: center;
+  }
+
+  /* Navigation */
+  .nav {
+    position: fixed;
+    bottom: 24px;
+    right: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    z-index: 100;
+  }
+
+  .nav span {
+    font-size: 0.85rem;
+    color: #444;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .nav button {
+    background: none;
+    border: 1px solid #333;
+    color: #888;
+    width: 36px;
+    height: 36px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+
+  .nav button:hover { border-color: #666; color: #fff; }
+
+  /* Honest section */
+  .honest-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 48px;
+    width: 100%;
+    max-width: 1000px;
+  }
+
+  .honest-item {
+    padding: 10px 0;
+    border-bottom: 1px solid #1a1a1a;
+  }
+
+  .honest-item strong {
+    font-size: 1.1rem;
+    color: #888;
+  }
+
+  .honest-item span {
+    display: block;
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 2px;
+  }
+
+  /* Tag */
+  .tag {
+    display: inline-block;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 10px;
+    border: 1px solid #333;
+    border-radius: 3px;
+    color: #666;
+    margin-bottom: 20px;
+  }
+
+  /* Price comparison */
+  .price-compare {
+    display: grid;
+    grid-template-columns: 1fr 40px 1fr;
+    gap: 0;
+    align-items: start;
+    width: 100%;
+    max-width: 900px;
+  }
+
+  .price-box {
+    padding: 24px;
+    border: 1px solid #222;
+    border-radius: 8px;
+  }
+
+  .price-box.them { border-color: #222; }
+  .price-box.us { border-color: #fff; }
+
+  .price-box h3 {
+    margin-bottom: 20px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #222;
+  }
+
+  .price-box.us h3 { border-bottom-color: #444; }
+
+  .price-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    font-size: 1rem;
+    color: #888;
+  }
+
+  .price-line .amount {
+    font-weight: 600;
+    color: #666;
+  }
+
+  .price-box.us .price-line .amount { color: #fff; }
+  .price-box.us .price-line { color: #bbb; }
+
+  .vs-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide title-slide active">
+  <div class="label">Competitive Analysis &mdash; April 2026</div>
+  <h1>Trackdrop vs Inflyte</h1>
+  <p class="subtitle">Where we win, where we don't, and how to<br>convince Inflyte users to switch</p>
+</div>
+
+<!-- SLIDE 2: Context -->
+<div class="slide">
+  <div class="label">Context</div>
+  <h2>Who is Inflyte?</h2>
+  <ul>
+    <li>UK-based promo platform, founded 2014 &mdash; the industry default</li>
+    <li>20,000+ labels and agencies, 125,000+ tastemakers</li>
+    <li>Claims ~50% of biggest-selling labels on Beatport</li>
+    <li>Notable clients: Sony Music, Ministry of Sound, Defected, Ram Records</li>
+    <li>Exclusive Rekordbox integration, RADAR airplay monitoring, forensic watermarking</li>
+  </ul>
+</div>
+
+<!-- SLIDE 3: Key Insight -->
+<div class="slide section-slide">
+  <div class="label">Key Insight</div>
+  <h1>Inflyte is powerful but rigid.</h1>
+  <p class="subtitle">Their pain points are structural &mdash;<br>and they're the exact areas where Trackdrop is flexible.</p>
+</div>
+
+<!-- SLIDE 4: Six Angles -->
+<div class="slide">
+  <div class="label">Strategy</div>
+  <h2>Six angles for the landing page</h2>
+  <ol>
+    <li><strong>Pricing model</strong> &mdash; pay per email, not per campaign</li>
+    <li><strong>No arbitrary limits</strong> &mdash; no fair use policy, no campaign caps</li>
+    <li><strong>Less friction for DJs</strong> &mdash; no invitation gate, public sign-up</li>
+    <li><strong>Every DJ setup</strong> &mdash; Serato + Rekordbox, not just Pioneer</li>
+    <li><strong>Modern player</strong> &mdash; DRM previews, waveforms, format choice</li>
+    <li><strong>Real-time analytics</strong> &mdash; live event stream, public feedback links</li>
+  </ol>
+</div>
+
+<!-- SLIDE 5: Section — Pricing -->
+<div class="slide section-slide">
+  <div class="tag">Angle 1</div>
+  <h1>Stop paying per campaign.<br>Pay per email.</h1>
+  <p class="subtitle">The single strongest angle. Inflyte's pricing is<br>their most documented pain point.</p>
+</div>
+
+<!-- SLIDE 6: Pricing comparison -->
+<div class="slide">
+  <div class="label">Angle 1 &mdash; Pricing</div>
+  <h2>The pricing problem</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte</h3>
+      <ul>
+        <li>&pound;44/mo for just 2 campaigns</li>
+        <li>&pound;99/mo for 5, &pound;220/mo for 15</li>
+        <li>Pay-as-you-go: &pound;33 per single campaign</li>
+        <li>GBP only, +20% VAT surprise</li>
+        <li>No free tier to evaluate</li>
+        <li>Stop-start usage prohibited</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>Unlimited promos &mdash; always</li>
+        <li>Pay only for emails actually sent</li>
+        <li>Small sends cost very little</li>
+        <li>Choose USD, GBP, or EUR at signup</li>
+        <li>Free signup credits to try first</li>
+        <li>No minimum commitment</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7: Pricing stat -->
+<div class="slide section-slide">
+  <div class="label">Angle 1 &mdash; Pricing</div>
+  <div class="stats-row">
+    <div>
+      <div class="stat">&pound;33</div>
+      <div class="stat-label">Inflyte charges per campaign<br>(even for a 10-person send)</div>
+    </div>
+    <div>
+      <div class="stat">&pound;0</div>
+      <div class="stat-label">Trackdrop charges per promo<br>(pay only for emails sent)</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8: Suggested headline -->
+<div class="slide section-slide">
+  <div class="label">Angle 1 &mdash; Hero Copy</div>
+  <blockquote>
+    &ldquo;Why are you paying per release?<br>Pay per email instead.&rdquo;
+  </blockquote>
+</div>
+
+<!-- SLIDE 9: Section — Fair Use -->
+<div class="slide section-slide">
+  <div class="tag">Angle 2</div>
+  <h1>No fair use policy.<br>No arbitrary limits.</h1>
+  <p class="subtitle">Inflyte's restrictions frustrate labels<br>trying to work efficiently.</p>
+</div>
+
+<!-- SLIDE 10: Fair use comparison -->
+<div class="slide">
+  <div class="label">Angle 2 &mdash; Limits</div>
+  <h2>Their restrictions vs our freedom</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte Rules</h3>
+      <ul>
+        <li>1 catalogue number per campaign</li>
+        <li>Max 12&ndash;15 tracks per campaign</li>
+        <li>Track count must match retail release</li>
+        <li>Contact limits require approval</li>
+        <li>Must prove opt-in for every import</li>
+        <li>Stop-start usage prohibited</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>Organise promos however you want</li>
+        <li>No track count limits</li>
+        <li>Include bonus/alt versions freely</li>
+        <li>No arbitrary contact caps</li>
+        <li>Import from Mailchimp or CSV</li>
+        <li>Use it when you need it</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11: Suggested headline -->
+<div class="slide section-slide">
+  <div class="label">Angle 2 &mdash; Hero Copy</div>
+  <blockquote>
+    &ldquo;Your music. Your list. Your rules.<br>No fair use policies. No campaign caps.&rdquo;
+  </blockquote>
+</div>
+
+<!-- SLIDE 12: Section — Friction -->
+<div class="slide section-slide">
+  <div class="tag">Angle 3</div>
+  <h1>Less friction for your DJs.</h1>
+  <p class="subtitle">Inflyte's permission-based model adds steps<br>that slow down your campaigns.</p>
+</div>
+
+<!-- SLIDE 13: Friction comparison -->
+<div class="slide">
+  <div class="label">Angle 3 &mdash; Friction</div>
+  <h2>Invitation gates vs immediate delivery</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte</h3>
+      <ul>
+        <li>Every new contact must accept an invitation first</li>
+        <li>Up to 3 reminders for non-responders</li>
+        <li>Stale lists = high non-acceptance = wasted credits</li>
+        <li>DJs can't find or subscribe to labels</li>
+        <li>No Mailchimp import</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>Contacts receive the promo immediately</li>
+        <li>Verification happens in parallel</li>
+        <li>Pay per email sent, not per acceptance</li>
+        <li>Public sign-up pages for DJs to opt in</li>
+        <li>One-click Mailchimp audience import</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14: Suggested headline -->
+<div class="slide section-slide">
+  <div class="label">Angle 3 &mdash; Hero Copy</div>
+  <blockquote>
+    &ldquo;Your contacts get the music immediately.<br>No invitation required.&rdquo;
+  </blockquote>
+</div>
+
+<!-- SLIDE 15: Section — DJ Software -->
+<div class="slide section-slide">
+  <div class="tag">Angle 4</div>
+  <h1>Works with every DJ's setup.<br>Not just Pioneer.</h1>
+  <p class="subtitle">Reframe Inflyte's exclusive partnership<br>as vendor lock-in.</p>
+</div>
+
+<!-- SLIDE 16: DJ software comparison -->
+<div class="slide">
+  <div class="label">Angle 4 &mdash; DJ Software</div>
+  <h2>Metadata that works everywhere</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte</h3>
+      <ul>
+        <li>Exclusive Rekordbox integration</li>
+        <li>Great for Pioneer DJs</li>
+        <li>Nothing for Serato users</li>
+        <li>Nothing for Traktor users</li>
+        <li>3 formats: WAV, AIFF, MP3</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>ID3v2.3 tags for Serato (incl. album artist)</li>
+        <li>RIFF INFO tags for Rekordbox</li>
+        <li>Both embedded in every WAV automatically</li>
+        <li>Title, artist, genre, artwork &mdash; all present</li>
+        <li>4 formats: WAV, AIFF, MP3, FLAC</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 17: Honest note -->
+<div class="slide">
+  <div class="label">Angle 4 &mdash; Honesty Note</div>
+  <h2>Be transparent about the difference</h2>
+  <p style="margin-bottom: 24px;">Inflyte's Rekordbox integration is <em>direct</em> &mdash; promos auto-appear in the Rekordbox library with ratings synced. That's genuinely powerful for Pioneer DJs.</p>
+  <p style="margin-bottom: 24px;">Trackdrop doesn't have that. Our angle is different:</p>
+  <ul>
+    <li>We serve <strong>all DJ software equally</strong> via metadata</li>
+    <li>No vendor lock-in &mdash; Serato, Rekordbox, Traktor all work</li>
+    <li>Recipients choose their format on every download</li>
+    <li>FLAC support that Inflyte doesn't offer</li>
+  </ul>
+</div>
+
+<!-- SLIDE 18: Suggested headline -->
+<div class="slide section-slide">
+  <div class="label">Angle 4 &mdash; Hero Copy</div>
+  <blockquote>
+    &ldquo;Your DJs use Serato, Rekordbox, Traktor,<br>and everything in between.<br>Trackdrop works with all of them.&rdquo;
+  </blockquote>
+</div>
+
+<!-- SLIDE 19: Section — Player -->
+<div class="slide section-slide">
+  <div class="tag">Angle 5</div>
+  <h1>A promo experience<br>DJs actually enjoy.</h1>
+  <p class="subtitle">Modern player with DRM protection,<br>waveforms, and format choice.</p>
+</div>
+
+<!-- SLIDE 20: Player features -->
+<div class="slide">
+  <div class="label">Angle 5 &mdash; Player</div>
+  <h2>The recipient experience</h2>
+  <div class="feature-grid">
+    <div class="item">
+      <strong>DRM-protected previews</strong>
+      <span>Widevine + FairPlay &mdash; previews can't be ripped</span>
+    </div>
+    <div class="item">
+      <strong>Waveform visualisation</strong>
+      <span>Full waveform with scrubbing on every track</span>
+    </div>
+    <div class="item">
+      <strong>Streaming-only mode</strong>
+      <span>Disable downloads entirely for sensitive pre-release content</span>
+    </div>
+    <div class="item">
+      <strong>Feedback gate</strong>
+      <span>Optional: require rating before downloads unlock</span>
+    </div>
+    <div class="item">
+      <strong>Format selector</strong>
+      <span>Recipients choose WAV / MP3 / AIFF / FLAC</span>
+    </div>
+    <div class="item">
+      <strong>Download all as ZIP</strong>
+      <span>One-click ZIP in chosen format</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 21: Protection honesty -->
+<div class="slide">
+  <div class="label">Angle 5 &mdash; Honesty Note</div>
+  <h2>Content protection: different approaches</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte</h3>
+      <ul>
+        <li>Forensic watermarking on downloads</li>
+        <li>US-patented, inaudible, survives compression</li>
+        <li>Leak checker identifies the source</li>
+        <li>After-the-fact: identifies leaker, doesn't prevent leak</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>DRM encryption on streaming previews</li>
+        <li>Widevine + FairPlay dual-DRM</li>
+        <li>Streaming-only mode prevents download entirely</li>
+        <li>Preventive for previews, but downloads are not watermarked</li>
+      </ul>
+    </div>
+  </div>
+  <p style="margin-top: 24px; font-size: 1rem; color: #666;">Don't position DRM as equivalent to forensic watermarking. They solve different problems.</p>
+</div>
+
+<!-- SLIDE 22: Section — Analytics -->
+<div class="slide section-slide">
+  <div class="tag">Angle 6</div>
+  <h1>Real-time analytics that<br>update as DJs listen.</h1>
+</div>
+
+<!-- SLIDE 23: Analytics features -->
+<div class="slide">
+  <div class="label">Angle 6 &mdash; Analytics</div>
+  <h2>What you can track</h2>
+  <div class="feature-grid">
+    <div class="item">
+      <strong>Live event stream</strong>
+      <span>WebSocket-powered &mdash; events appear instantly</span>
+    </div>
+    <div class="item">
+      <strong>15 event types</strong>
+      <span>Queued, delivered, opened, clicked, viewed, played, downloaded, feedback&hellip;</span>
+    </div>
+    <div class="item">
+      <strong>Per-track metrics</strong>
+      <span>Play count, unique plays, downloads, play duration</span>
+    </div>
+    <div class="item">
+      <strong>Geo data on every event</strong>
+      <span>Country, city, region via MaxMind GeoIP2</span>
+    </div>
+    <div class="item">
+      <strong>Delivery funnel</strong>
+      <span>Full pipeline from queued to downloaded</span>
+    </div>
+    <div class="item">
+      <strong>Public feedback URL</strong>
+      <span>Share with artists/managers &mdash; always live, no export step</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 24: Feedback share -->
+<div class="slide">
+  <div class="label">Angle 6 &mdash; Feedback Sharing</div>
+  <h2>Inflyte exports PDFs.<br>Trackdrop shares a live link.</h2>
+  <div class="compare">
+    <div class="compare-col them">
+      <h3>Inflyte</h3>
+      <ul>
+        <li>Customisable PDF report export</li>
+        <li>Word document download for editing</li>
+        <li>Static &mdash; stale the moment it's generated</li>
+        <li>Must re-export as new feedback arrives</li>
+      </ul>
+    </div>
+    <div class="compare-col us">
+      <h3>Trackdrop</h3>
+      <ul>
+        <li>Public shareable URL (no login required)</li>
+        <li>Always live &mdash; updates as feedback arrives</li>
+        <li>Shows: emails sent, open rate, listens, downloads</li>
+        <li>Full feedback table with ratings, comments, countries</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 25: Section — Honest Gaps -->
+<div class="slide section-slide">
+  <div class="tag">Credibility</div>
+  <h1>Where Inflyte still leads.</h1>
+  <p class="subtitle">Don't overclaim. Acknowledge these gaps<br>or leave them out of the comparison.</p>
+</div>
+
+<!-- SLIDE 26: Gaps -->
+<div class="slide">
+  <div class="label">Honest Gaps</div>
+  <h2>Things Inflyte has that we don't</h2>
+  <div class="honest-grid">
+    <div class="honest-item">
+      <strong>RADAR monitoring</strong>
+      <span>Airplay tracking across radio, Spotify, Apple Music, Beatport, TikTok, Shazam, DJ sets. No Trackdrop equivalent.</span>
+    </div>
+    <div class="honest-item">
+      <strong>Forensic watermarking</strong>
+      <span>US-patented leak detection on downloads. Trackdrop DRM only covers previews.</span>
+    </div>
+    <div class="honest-item">
+      <strong>Pre-save integration</strong>
+      <span>Spotify/Apple Music pre-saves tied to promo campaigns. Not in Trackdrop.</span>
+    </div>
+    <div class="honest-item">
+      <strong>Native mobile apps</strong>
+      <span>iOS/Android with offline listening. Trackdrop is web-only.</span>
+    </div>
+    <div class="honest-item">
+      <strong>Dropbox auto-sync</strong>
+      <span>Promos auto-sync to DJ's Dropbox. Not in Trackdrop.</span>
+    </div>
+    <div class="honest-item">
+      <strong>Established trust</strong>
+      <span>12 years in market. Sony, Ministry of Sound, Defected. Hard to match overnight.</span>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 27: How to handle gaps -->
+<div class="slide">
+  <div class="label">Honest Gaps</div>
+  <h2>How to handle these on the page</h2>
+  <ul>
+    <li><strong>RADAR:</strong> Don't mention it. Position Trackdrop as focused on the pre-release window where delivery and feedback matter most</li>
+    <li><strong>Watermarking:</strong> Position streaming-only mode as a preventive measure for sensitive content</li>
+    <li><strong>Pre-saves:</strong> Acknowledge the gap or omit from comparison entirely</li>
+    <li><strong>Mobile apps:</strong> Reframe as "no app install required &mdash; works in any browser"</li>
+    <li><strong>Trust:</strong> Lead with product advantages, not tenure claims. Let the product speak.</li>
+  </ul>
+</div>
+
+<!-- SLIDE 28: Section — Migration -->
+<div class="slide section-slide">
+  <div class="tag">Conversion</div>
+  <h1>Make switching feel easy.</h1>
+  <p class="subtitle">Reducing migration anxiety is as important<br>as showing feature advantages.</p>
+</div>
+
+<!-- SLIDE 29: Migration features -->
+<div class="slide">
+  <div class="label">Migration</div>
+  <h2>What to highlight for switchers</h2>
+  <ul>
+    <li><strong>One-click Mailchimp import</strong> &mdash; OAuth connect, pick audience, done</li>
+    <li><strong>CSV import with column mapping</strong> &mdash; bring your spreadsheet, map the fields</li>
+    <li><strong>Tag-based segmentation</strong> &mdash; recreate your Inflyte segments as audience tags</li>
+    <li><strong>Free signup credits</strong> &mdash; try a real send before committing money</li>
+    <li><strong>Multi-currency billing</strong> &mdash; pick USD, GBP, or EUR (no surprise VAT-on-GBP)</li>
+    <li><strong>No lock-in</strong> &mdash; no stop-start prohibition, no minimum commitment</li>
+  </ul>
+</div>
+
+<!-- SLIDE 30: Suggested Page Structure -->
+<div class="slide">
+  <div class="label">Recommendation</div>
+  <h2>Suggested landing page structure</h2>
+  <ol>
+    <li><strong>Hero</strong> &mdash; Pricing angle: "Stop paying per campaign"</li>
+    <li><strong>Pain/solution grid</strong> &mdash; 3&ndash;4 Inflyte restrictions mapped to Trackdrop answers</li>
+    <li><strong>Player demo</strong> &mdash; Interactive or video: waveforms, DRM, format selector, feedback gate</li>
+    <li><strong>DJ software</strong> &mdash; "Works with Serato AND Rekordbox" with detail</li>
+    <li><strong>Analytics</strong> &mdash; Dashboard screenshot, per-track stats, live feedback page</li>
+    <li><strong>Migration CTA</strong> &mdash; "Bring your Mailchimp audience in one click"</li>
+    <li><strong>Pricing comparison</strong> &mdash; Side-by-side with Inflyte's published prices</li>
+    <li><strong>Social proof</strong> &mdash; Testimonials if available</li>
+  </ol>
+</div>
+
+<!-- SLIDE 31: Headlines -->
+<div class="slide">
+  <div class="label">Recommendation</div>
+  <h2>Candidate hero headlines</h2>
+  <ul>
+    <li>"Why are you paying per release? Pay per email instead."</li>
+    <li>"Unlimited promos. You only pay for the emails you send."</li>
+    <li>"Your music. Your list. Your rules."</li>
+    <li>"A promo platform that works with every DJ's setup."</li>
+    <li>"Your contacts get the music immediately. No invitation required."</li>
+  </ul>
+  <p style="margin-top: 24px;">Lead with pricing. It's the sharpest wedge into an Inflyte user's attention.</p>
+</div>
+
+<!-- SLIDE 32: End -->
+<div class="slide title-slide">
+  <div class="label">Next Steps</div>
+  <h1>Build the page.<br>Lead with price.<br>Be honest about gaps.</h1>
+  <p class="subtitle">Credibility converts more switchers than overclaiming.</p>
+</div>
+
+<!-- Navigation -->
+<div class="nav">
+  <button onclick="prev()" aria-label="Previous slide">&larr;</button>
+  <span id="counter">1 / 32</span>
+  <button onclick="next()" aria-label="Next slide">&rarr;</button>
+</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  let current = 0;
+
+  function show(n) {
+    slides[current].classList.remove('active');
+    current = Math.max(0, Math.min(n, slides.length - 1));
+    slides[current].classList.add('active');
+    document.getElementById('counter').textContent = (current + 1) + ' / ' + slides.length;
+  }
+
+  function next() { show(current + 1); }
+  function prev() { show(current - 1); }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    if (e.key === 'Home') { e.preventDefault(); show(0); }
+    if (e.key === 'End') { e.preventDefault(); show(slides.length - 1); }
+  });
+</script>
+</body>
+</html>
