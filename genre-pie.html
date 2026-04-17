@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Mixcloud · Genre Mix Prototype</title>
+<style>
+  :root {
+    --bg: #0f0f14;
+    --panel: #15151c;
+    --panel-2: #1c1c26;
+    --line: #262633;
+    --text: #f5f5f7;
+    --muted: #9a9aa8;
+    --accent: #5000ff;     /* mixcloud-ish purple */
+    --accent-2: #ff3366;
+    --ok: #3ddc97;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
+    -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  .app { max-width: 1200px; margin: 0 auto; padding: 32px 24px 120px; }
+  header.top {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 24px; border-bottom: 1px solid var(--line); margin-bottom: 32px;
+  }
+  .logo {
+    font-weight: 800; font-size: 20px; letter-spacing: -0.02em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo .dot {
+    width: 14px; height: 14px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  }
+  .badge {
+    font-size: 11px; padding: 4px 8px; border-radius: 999px;
+    background: rgba(80,0,255,0.15); color: #cdbaff; border: 1px solid rgba(80,0,255,0.4);
+    text-transform: uppercase; letter-spacing: 0.08em;
+  }
+
+  .stack { display: flex; flex-direction: column; gap: 20px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 22px;
+  }
+  .card h2 {
+    font-size: 14px; text-transform: uppercase; letter-spacing: 0.1em;
+    color: var(--muted); margin: 0 0 16px; font-weight: 600;
+  }
+
+  /* Upload form */
+  .field { margin-bottom: 14px; }
+  .field label {
+    display: block; font-size: 12px; color: var(--muted);
+    margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.08em;
+  }
+  .field input[type=text], .field textarea {
+    width: 100%; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; font-family: inherit;
+    outline: none; transition: border-color .15s;
+  }
+  .field input[type=text]:focus, .field textarea:focus { border-color: var(--accent); }
+  .field textarea { min-height: 70px; resize: vertical; }
+
+  /* Genre picker */
+  .genre-add { display: flex; gap: 8px; margin-bottom: 12px; }
+  .genre-add input {
+    flex: 1; background: var(--panel-2); color: var(--text);
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 10px 12px; font-size: 14px; outline: none;
+  }
+  .genre-add input:focus { border-color: var(--accent); }
+  .genre-add button, .btn {
+    background: var(--accent); color: white; border: none;
+    border-radius: 10px; padding: 10px 14px; font-size: 14px; font-weight: 600;
+    cursor: pointer; transition: transform .05s, background .15s;
+  }
+  .genre-add button:hover, .btn:hover { background: #5f14ff; }
+  .genre-add button:active, .btn:active { transform: translateY(1px); }
+  .btn.ghost { background: transparent; border: 1px solid var(--line); color: var(--text); }
+  .btn.ghost:hover { background: var(--panel-2); }
+
+  .suggest { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 18px; }
+  .suggest .chip {
+    font-size: 12px; padding: 5px 10px; border-radius: 999px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    color: var(--muted); cursor: pointer; transition: color .15s, border-color .15s;
+  }
+  .suggest .chip:hover { color: var(--text); border-color: #3d3d4d; }
+  .suggest .chip.used { opacity: 0.35; pointer-events: none; }
+
+  /* Genre rows */
+  .genres { display: flex; flex-direction: column; gap: 8px; }
+  .genre-row {
+    display: grid;
+    grid-template-columns: 14px 1fr 56px 28px;
+    align-items: center; gap: 10px;
+    padding: 8px 10px; border-radius: 10px;
+    background: var(--panel-2); border: 1px solid var(--line);
+    transition: border-color .15s;
+  }
+  .genre-row.locked { border-color: #3d3d4d; }
+  .genre-row .sw {
+    width: 14px; height: 14px; border-radius: 4px;
+  }
+  .genre-row .name { font-size: 14px; font-weight: 500; }
+  .genre-row input.pct {
+    width: 56px; background: transparent; border: 1px solid var(--line);
+    color: var(--text); border-radius: 8px; padding: 6px 6px;
+    text-align: right; font-size: 13px; font-variant-numeric: tabular-nums;
+    outline: none;
+  }
+  .genre-row input.pct:focus { border-color: var(--accent); }
+  .genre-row .pct-suffix { color: var(--muted); margin-left: -6px; font-size: 12px; }
+  .genre-row .actions { display: flex; gap: 4px; }
+  .icon-btn {
+    width: 28px; height: 28px; border-radius: 8px;
+    border: none; background: transparent; color: var(--muted);
+    cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+    transition: background .15s, color .15s;
+  }
+  .icon-btn:hover { background: var(--panel); color: var(--text); }
+  .icon-btn.locked { color: #ffbf47; }
+  .icon-btn svg { width: 14px; height: 14px; }
+
+  .total-row {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--line);
+    font-size: 13px;
+  }
+  .total-row .amount { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .total-row .amount.ok { color: var(--ok); }
+  .total-row .amount.off { color: var(--accent-2); }
+  .hint { color: var(--muted); font-size: 12px; }
+
+  /* Pie */
+  .pie-wrap {
+    display: flex; flex-direction: column; align-items: center; gap: 14px;
+  }
+  .pie {
+    width: 320px; height: 320px; position: relative;
+    user-select: none;
+    touch-action: none;
+  }
+  .pie svg { width: 100%; height: 100%; overflow: visible; }
+  .pie .slice { transition: filter .15s; cursor: pointer; }
+  .pie .slice:hover { filter: brightness(1.15); }
+  .pie .handle {
+    fill: #fff; stroke: #0f0f14; stroke-width: 2;
+    cursor: grab;
+  }
+  .pie .handle:active { cursor: grabbing; }
+  .pie .label {
+    fill: #fff; font-size: 11px; font-weight: 600; pointer-events: none;
+    text-anchor: middle; dominant-baseline: middle;
+    paint-order: stroke;
+    stroke: rgba(0,0,0,0.55); stroke-width: 3px; stroke-linejoin: round;
+  }
+  .pie .center {
+    fill: var(--panel); stroke: var(--line); stroke-width: 1;
+  }
+  .pie .center-text {
+    fill: var(--muted); font-size: 11px; text-anchor: middle;
+    text-transform: uppercase; letter-spacing: 0.12em;
+  }
+  .pie .center-text.big {
+    fill: var(--text); font-size: 20px; font-weight: 700; letter-spacing: -0.01em;
+    text-transform: none;
+  }
+
+  .pie-empty {
+    color: var(--muted); font-size: 13px; text-align: center;
+    padding: 48px 20px; border: 1px dashed var(--line); border-radius: 12px;
+  }
+
+  /* Sticky footer with CTAs */
+  .sticky-footer {
+    position: fixed; bottom: 0; left: 0; right: 0; z-index: 20;
+    background: rgba(15, 15, 20, 0.85);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--line);
+  }
+  .sticky-footer .inner {
+    max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  }
+  .sticky-footer .status { font-size: 13px; color: var(--muted); }
+  .sticky-footer .status .amount { font-weight: 700; font-variant-numeric: tabular-nums; color: var(--text); }
+  .sticky-footer .status .amount.ok { color: var(--ok); }
+  .sticky-footer .status .amount.off { color: var(--accent-2); }
+  .sticky-footer .actions { display: flex; gap: 10px; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--panel); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; font-size: 13px; color: var(--text);
+    opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+    max-width: 480px;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast pre { margin: 8px 0 0; font-size: 11px; color: var(--muted); max-height: 180px; overflow: auto; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header class="top">
+    <div class="logo"><span class="dot"></span>mixcloud<span class="badge">Prototype · Genre mix</span></div>
+    <div class="hint">Upload · Step 2 of 3</div>
+  </header>
+
+  <div class="stack">
+    <!-- ROW 1: Mix details (full width) -->
+    <div class="card">
+      <h2>Mix details</h2>
+      <div class="field">
+        <label for="title">Title</label>
+        <input id="title" type="text" value="Late Night at Phonox" />
+      </div>
+      <div class="field">
+        <label for="artist">Uploader</label>
+        <input id="artist" type="text" value="dj ricky" />
+      </div>
+      <div class="field">
+        <label for="desc">Description</label>
+        <textarea id="desc">Recorded live, 2am till close. Deep, dubby, drifts into breaks by the end.</textarea>
+      </div>
+    </div>
+
+    <!-- ROW 2: Genre breakdown + Pie (side by side) -->
+    <div class="grid">
+      <div class="card">
+        <h2>Genre breakdown</h2>
+
+        <div class="genre-add">
+          <input id="genre-input" type="text" placeholder="Add a genre (e.g. House)…" />
+          <button id="add-btn" type="button">Add</button>
+        </div>
+
+        <div class="suggest" id="suggest"></div>
+
+        <div class="genres" id="genres"></div>
+
+        <div class="total-row">
+          <span class="hint">Total must equal 100%</span>
+          <span><span class="amount" id="total">0</span><span class="hint">%</span></span>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Your mix, visualised</h2>
+        <div class="pie-wrap">
+          <div class="pie" id="pie">
+            <div class="pie-empty" id="pie-empty">Add genres on the left to build your mix.</div>
+            <svg id="pie-svg" viewBox="-160 -160 320 320" style="display:none"></svg>
+          </div>
+          <div class="hint">Drag the white handles between slices to re-weight. Locked genres stay fixed.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky footer with primary actions -->
+<div class="sticky-footer">
+  <div class="inner">
+    <div class="status">
+      Mix total: <span class="amount" id="footer-total">0</span>% of 100%
+    </div>
+    <div class="actions">
+      <button class="btn ghost" id="reset-btn" type="button">Reset</button>
+      <button class="btn" id="publish-btn" type="button">Publish mix</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  // --- Palette (cycled for new genres) ---
+  const PALETTE = [
+    "#5000ff", "#ff3366", "#3ddc97", "#f7b500", "#00b8d9",
+    "#ff7a59", "#a259ff", "#2ec4b6", "#e63946", "#457b9d",
+    "#ffbf69", "#8ac926", "#f15bb5"
+  ];
+
+  const SUGGESTIONS = [
+    "House", "Techno", "Deep House", "Disco", "Drum & Bass",
+    "Hip-Hop", "Jazz", "Ambient", "Dub", "Breaks",
+    "Garage", "Soul", "Afrobeat", "Downtempo"
+  ];
+
+  // --- State ---
+  // genres: [{ id, name, pct, color, locked }]
+  let genres = [
+    { id: uid(), name: "House",      pct: 50, color: PALETTE[0], locked: false },
+    { id: uid(), name: "Disco",      pct: 30, color: PALETTE[2], locked: false },
+    { id: uid(), name: "Deep House", pct: 20, color: PALETTE[3], locked: false }
+  ];
+
+  function uid() { return Math.random().toString(36).slice(2, 9); }
+
+  // --- DOM refs ---
+  const $genres = document.getElementById("genres");
+  const $input  = document.getElementById("genre-input");
+  const $addBtn = document.getElementById("add-btn");
+  const $suggest = document.getElementById("suggest");
+  const $total  = document.getElementById("total");
+  const $svg    = document.getElementById("pie-svg");
+  const $pieEmpty = document.getElementById("pie-empty");
+  const $title  = document.getElementById("title");
+  const $artist = document.getElementById("artist");
+  const $publish= document.getElementById("publish-btn");
+  const $reset  = document.getElementById("reset-btn");
+  const $toast  = document.getElementById("toast");
+  const $footerTotal = document.getElementById("footer-total");
+
+  // --- Add / remove genres ---
+  function addGenre(name) {
+    name = name.trim();
+    if (!name) return;
+    if (genres.some(g => g.name.toLowerCase() === name.toLowerCase())) {
+      flashToast("Already in your mix");
+      return;
+    }
+    const color = PALETTE[genres.length % PALETTE.length];
+    // Take 10% from the largest unlocked genre to seed the new one
+    let pct = 0;
+    const donor = [...genres].filter(g => !g.locked).sort((a,b) => b.pct - a.pct)[0];
+    if (donor && donor.pct >= 20) { donor.pct -= 10; pct = 10; }
+    else if (genres.length === 0) { pct = 100; }
+    else {
+      // redistribute evenly from all unlocked
+      const unlocked = genres.filter(g => !g.locked);
+      const share = 10 / Math.max(1, unlocked.length);
+      unlocked.forEach(g => g.pct = Math.max(0, g.pct - share));
+      pct = 10;
+    }
+    genres.push({ id: uid(), name, pct, color, locked: false });
+    normalize();
+    render();
+  }
+
+  function removeGenre(id) {
+    const idx = genres.findIndex(g => g.id === id);
+    if (idx < 0) return;
+    const removed = genres[idx];
+    genres.splice(idx, 1);
+    // redistribute the removed % to unlocked genres proportionally
+    const unlocked = genres.filter(g => !g.locked);
+    if (unlocked.length && removed.pct > 0) {
+      const sumU = unlocked.reduce((s,g) => s + g.pct, 0) || 1;
+      unlocked.forEach(g => g.pct += (g.pct / sumU) * removed.pct);
+    }
+    normalize();
+    render();
+  }
+
+  function toggleLock(id) {
+    const g = genres.find(g => g.id === id);
+    if (!g) return;
+    g.locked = !g.locked;
+    render();
+  }
+
+  function setPct(id, newPct) {
+    const g = genres.find(g => g.id === id);
+    if (!g || g.locked) return;
+    newPct = clamp(Number(newPct) || 0, 0, 100);
+
+    // Respect locked total
+    const lockedSum = genres.filter(x => x.locked).reduce((s,x) => s + x.pct, 0);
+    const maxAllowed = 100 - lockedSum;
+    newPct = Math.min(newPct, maxAllowed);
+
+    const otherUnlocked = genres.filter(x => !x.locked && x.id !== id);
+    const otherSum = otherUnlocked.reduce((s,x) => s + x.pct, 0);
+    const remaining = maxAllowed - newPct;
+
+    if (otherUnlocked.length === 0) {
+      g.pct = maxAllowed;
+    } else if (otherSum <= 0.0001) {
+      // distribute remaining evenly
+      const share = remaining / otherUnlocked.length;
+      otherUnlocked.forEach(x => x.pct = share);
+      g.pct = newPct;
+    } else {
+      const scale = remaining / otherSum;
+      otherUnlocked.forEach(x => x.pct = x.pct * scale);
+      g.pct = newPct;
+    }
+    normalize();
+    render();
+  }
+
+  function normalize() {
+    // Guarantee non-negative + sum exactly 100 (if anything exists)
+    genres.forEach(g => g.pct = Math.max(0, g.pct));
+    const sum = genres.reduce((s,g) => s + g.pct, 0);
+    if (genres.length === 0 || sum === 0) return;
+    // scale to 100
+    const scale = 100 / sum;
+    genres.forEach(g => g.pct = g.pct * scale);
+  }
+
+  function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+
+  // --- Rendering ---
+  function render() {
+    renderGenres();
+    renderSuggest();
+    renderPie();
+    renderTotal();
+  }
+
+  function renderGenres() {
+    $genres.innerHTML = "";
+    genres.forEach(g => {
+      const row = document.createElement("div");
+      row.className = "genre-row" + (g.locked ? " locked" : "");
+      row.innerHTML = `
+        <span class="sw" style="background:${g.color}"></span>
+        <span class="name">${escapeHtml(g.name)}</span>
+        <div style="display:flex;align-items:center;gap:2px">
+          <input class="pct" type="number" min="0" max="100" step="1"
+                 value="${Math.round(g.pct)}" ${g.locked ? "disabled" : ""} data-id="${g.id}">
+          <span class="pct-suffix">%</span>
+        </div>
+        <div class="actions">
+          <button class="icon-btn ${g.locked ? "locked" : ""}" data-act="lock" data-id="${g.id}" title="${g.locked ? "Unlock" : "Lock percentage"}">
+            ${g.locked
+              ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 10V7a6 6 0 1 1 12 0v3h1a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h1zm2 0h8V7a4 4 0 0 0-8 0v3z"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 7.5-2"/></svg>'}
+          </button>
+          <button class="icon-btn" data-act="remove" data-id="${g.id}" title="Remove">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6L6 18"/></svg>
+          </button>
+        </div>
+      `;
+      $genres.appendChild(row);
+    });
+
+    // wire events
+    $genres.querySelectorAll("input.pct").forEach(inp => {
+      inp.addEventListener("change", e => setPct(e.target.dataset.id, e.target.value));
+    });
+    $genres.querySelectorAll("button[data-act=remove]").forEach(b => {
+      b.addEventListener("click", e => removeGenre(e.currentTarget.dataset.id));
+    });
+    $genres.querySelectorAll("button[data-act=lock]").forEach(b => {
+      b.addEventListener("click", e => toggleLock(e.currentTarget.dataset.id));
+    });
+  }
+
+  function renderSuggest() {
+    $suggest.innerHTML = "";
+    SUGGESTIONS.forEach(name => {
+      const used = genres.some(g => g.name.toLowerCase() === name.toLowerCase());
+      const chip = document.createElement("span");
+      chip.className = "chip" + (used ? " used" : "");
+      chip.textContent = name;
+      chip.addEventListener("click", () => addGenre(name));
+      $suggest.appendChild(chip);
+    });
+  }
+
+  function renderTotal() {
+    const sum = genres.reduce((s,g) => s + g.pct, 0);
+    const rounded = Math.round(sum);
+    $total.textContent = rounded;
+    $total.className = "amount " + (rounded === 100 ? "ok" : "off");
+    if ($footerTotal) {
+      $footerTotal.textContent = rounded;
+      $footerTotal.className = "amount " + (rounded === 100 ? "ok" : "off");
+    }
+  }
+
+  // --- Pie rendering + drag-to-adjust boundaries ---
+  const R = 130;       // outer radius
+  const INNER = 55;    // donut hole radius
+  const HANDLE_R = 7;
+
+  function polar(angleDeg, radius) {
+    const a = (angleDeg - 90) * Math.PI / 180; // 0deg -> top
+    return { x: Math.cos(a) * radius, y: Math.sin(a) * radius };
+  }
+
+  function arcPath(startDeg, endDeg, rOuter, rInner) {
+    // Handle full circle special case
+    const sweep = endDeg - startDeg;
+    if (sweep >= 359.999) {
+      // Draw two half circles to represent full donut
+      return [
+        `M ${polar(0, rOuter).x} ${polar(0, rOuter).y}`,
+        `A ${rOuter} ${rOuter} 0 1 1 ${polar(180, rOuter).x} ${polar(180, rOuter).y}`,
+        `A ${rOuter} ${rOuter} 0 1 1 ${polar(359.999, rOuter).x} ${polar(359.999, rOuter).y}`,
+        `L ${polar(359.999, rInner).x} ${polar(359.999, rInner).y}`,
+        `A ${rInner} ${rInner} 0 1 0 ${polar(180, rInner).x} ${polar(180, rInner).y}`,
+        `A ${rInner} ${rInner} 0 1 0 ${polar(0, rInner).x} ${polar(0, rInner).y}`,
+        "Z"
+      ].join(" ");
+    }
+    const largeArc = sweep > 180 ? 1 : 0;
+    const so = polar(startDeg, rOuter);
+    const eo = polar(endDeg, rOuter);
+    const ei = polar(endDeg, rInner);
+    const si = polar(startDeg, rInner);
+    return [
+      `M ${so.x} ${so.y}`,
+      `A ${rOuter} ${rOuter} 0 ${largeArc} 1 ${eo.x} ${eo.y}`,
+      `L ${ei.x} ${ei.y}`,
+      `A ${rInner} ${rInner} 0 ${largeArc} 0 ${si.x} ${si.y}`,
+      "Z"
+    ].join(" ");
+  }
+
+  function renderPie() {
+    if (genres.length === 0) {
+      $pieEmpty.style.display = "";
+      $svg.style.display = "none";
+      return;
+    }
+    $pieEmpty.style.display = "none";
+    $svg.style.display = "";
+
+    // Build slices: cumulative angles
+    let cursor = 0;
+    const slices = genres.map(g => {
+      const start = cursor;
+      const end = cursor + (g.pct / 100) * 360;
+      cursor = end;
+      return { ...g, start, end };
+    });
+
+    const parts = [];
+
+    // Slices
+    slices.forEach(s => {
+      if (s.end - s.start < 0.01) return;
+      parts.push(
+        `<path class="slice" d="${arcPath(s.start, s.end, R, INNER)}"
+               fill="${s.color}" data-id="${s.id}"></path>`
+      );
+      // Label at mid-angle (genre name; hide if slice too small)
+      const mid = (s.start + s.end) / 2;
+      const lr = (R + INNER) / 2;
+      const lp = polar(mid, lr);
+      if (s.pct >= 7) {
+        parts.push(
+          `<text class="label" x="${lp.x}" y="${lp.y}">${escapeHtml(s.name)}</text>`
+        );
+      }
+    });
+
+    // Center hole + label
+    parts.push(`<circle class="center" r="${INNER - 2}"></circle>`);
+    parts.push(`<text class="center-text" x="0" y="-8">Genres</text>`);
+    parts.push(`<text class="center-text big" x="0" y="14">${genres.length}</text>`);
+
+    // Handles between slices (only if >1 slice and not 100% on one)
+    if (slices.length > 1) {
+      for (let i = 0; i < slices.length; i++) {
+        const boundaryDeg = slices[i].end % 360;
+        // A boundary sits between slices[i] and slices[(i+1) % n]
+        const leftId = slices[i].id;
+        const rightId = slices[(i + 1) % slices.length].id;
+        const pos = polar(boundaryDeg, R);
+        parts.push(
+          `<circle class="handle" r="${HANDLE_R}" cx="${pos.x}" cy="${pos.y}"
+                   data-left="${leftId}" data-right="${rightId}"></circle>`
+        );
+      }
+    }
+
+    $svg.innerHTML = parts.join("");
+
+    // Wire handle drag
+    $svg.querySelectorAll(".handle").forEach(h => {
+      h.addEventListener("pointerdown", onHandleDown);
+    });
+    // Clicking a slice focuses its pct input
+    $svg.querySelectorAll(".slice").forEach(s => {
+      s.addEventListener("click", e => {
+        const id = e.currentTarget.dataset.id;
+        const inp = $genres.querySelector(`input.pct[data-id="${id}"]`);
+        if (inp) inp.focus();
+      });
+    });
+  }
+
+  // --- Drag logic ---
+  let drag = null;
+
+  function onHandleDown(e) {
+    e.preventDefault();
+    const leftId = e.currentTarget.dataset.left;
+    const rightId = e.currentTarget.dataset.right;
+    const left = genres.find(g => g.id === leftId);
+    const right = genres.find(g => g.id === rightId);
+    if (!left || !right) return;
+    // Both must be unlocked to move boundary between them
+    if (left.locked || right.locked) {
+      flashToast("Unlock both neighbouring genres to move this boundary");
+      return;
+    }
+    const combined = left.pct + right.pct;
+
+    // Compute current boundary angle (running sum up to and including left)
+    let sumBefore = 0;
+    for (const g of genres) {
+      if (g.id === leftId) break;
+      sumBefore += g.pct;
+    }
+    // Angle at start of left
+    const startAngle = (sumBefore / 100) * 360;
+    // Total "available" angle is combined% -> combined/100*360
+    const availAngle = (combined / 100) * 360;
+
+    drag = {
+      leftId, rightId, combined,
+      startAngle, availAngle,
+      handleEl: e.currentTarget
+    };
+    e.currentTarget.setPointerCapture(e.pointerId);
+    document.addEventListener("pointermove", onHandleMove);
+    document.addEventListener("pointerup", onHandleUp, { once: true });
+  }
+
+  function onHandleMove(e) {
+    if (!drag) return;
+    const rect = $svg.getBoundingClientRect();
+    const cx = rect.left + rect.width / 2;
+    const cy = rect.top + rect.height / 2;
+    const dx = e.clientX - cx;
+    const dy = e.clientY - cy;
+    // angle from top (0deg), clockwise
+    let angle = Math.atan2(dy, dx) * 180 / Math.PI + 90;
+    if (angle < 0) angle += 360;
+    if (angle >= 360) angle -= 360;
+
+    // Normalize relative to startAngle
+    let rel = angle - drag.startAngle;
+    if (rel < 0) rel += 360;
+    // Clamp to available arc with tiny buffer so neither side hits 0
+    const minRel = 0.5;
+    const maxRel = drag.availAngle - 0.5;
+    rel = clamp(rel, minRel, maxRel);
+
+    const leftPct = (rel / 360) * 100;
+    const rightPct = drag.combined - leftPct;
+
+    const left = genres.find(g => g.id === drag.leftId);
+    const right = genres.find(g => g.id === drag.rightId);
+    left.pct = leftPct;
+    right.pct = rightPct;
+    render();
+  }
+
+  function onHandleUp(e) {
+    document.removeEventListener("pointermove", onHandleMove);
+    drag = null;
+  }
+
+  // --- Events ---
+  $addBtn.addEventListener("click", () => {
+    addGenre($input.value);
+    $input.value = "";
+    $input.focus();
+  });
+  $input.addEventListener("keydown", e => {
+    if (e.key === "Enter") { addGenre($input.value); $input.value = ""; }
+  });
+
+  $publish.addEventListener("click", () => {
+    const sum = Math.round(genres.reduce((s,g) => s+g.pct, 0));
+    if (genres.length === 0) return flashToast("Add at least one genre.");
+    if (sum !== 100) return flashToast(`Your mix adds up to ${sum}%, not 100%.`);
+    const payload = {
+      title: $title.value,
+      uploader: $artist.value,
+      description: document.getElementById("desc").value,
+      genres: genres.map(g => ({ name: g.name, pct: Math.round(g.pct) }))
+    };
+    flashToast("Mix published! Payload sent to backend:", JSON.stringify(payload, null, 2));
+  });
+
+  $reset.addEventListener("click", () => {
+    genres = [
+      { id: uid(), name: "House",      pct: 50, color: PALETTE[0], locked: false },
+      { id: uid(), name: "Disco",      pct: 30, color: PALETTE[2], locked: false },
+      { id: uid(), name: "Deep House", pct: 20, color: PALETTE[3], locked: false }
+    ];
+    render();
+  });
+
+  // --- Toast ---
+  let toastTimer;
+  function flashToast(msg, detail) {
+    $toast.innerHTML = escapeHtml(msg) + (detail ? `<pre>${escapeHtml(detail)}</pre>` : "");
+    $toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => $toast.classList.remove("show"), detail ? 5000 : 2200);
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // --- Init ---
+  render();
+})();
+</script>
+</body>
+</html>
