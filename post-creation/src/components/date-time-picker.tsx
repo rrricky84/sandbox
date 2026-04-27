@@ -81,9 +81,10 @@ export function DateTimePicker({ value, onChange }: DateTimePickerProps) {
                 update(date, h);
               }}
               className={cn(
-                "rounded-md border border-[var(--border)] px-3 py-2 text-sm transition-colors hover:bg-[var(--accent)]",
-                time === h &&
-                  "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)]"
+                "rounded-md border border-[var(--border)] px-3 py-2 text-sm transition-colors",
+                time === h
+                  ? "bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] hover:bg-[oklch(0.28_0_0)]"
+                  : "hover:bg-[var(--accent)]"
               )}
             >
               {h} {tz && <span className="opacity-70">({tz})</span>}

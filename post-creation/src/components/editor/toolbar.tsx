@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useLexicalComposerContext } from "@lexical/react/LexicalComposerContext";
 import {
+  $createParagraphNode,
   $getSelection,
   $isRangeSelection,
   CAN_REDO_COMMAND,
@@ -13,7 +14,15 @@ import {
   UNDO_COMMAND,
   type ElementFormatType,
 } from "lexical";
-import { mergeRegister } from "@lexical/utils";
+import { mergeRegister, $findMatchingParent } from "@lexical/utils";
+import { $setBlocksType } from "@lexical/selection";
+import {
+  $createHeadingNode,
+  $createQuoteNode,
+  $isHeadingNode,
+  $isQuoteNode,
+  type HeadingTagType,
+} from "@lexical/rich-text";
 import {
   AlignCenter,
   AlignJustify,
@@ -25,7 +34,24 @@ import {
   Underline,
   Undo,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+
+type BlockType = "paragraph" | "h1" | "h2" | "h3" | "quote";
+
+const BLOCK_LABELS: Record<BlockType, string> = {
+  paragraph: "Normal",
+  h1: "Heading 1",
+  h2: "Heading 2",
+  h3: "Heading 3",
+  quote: "Quote",
+};
 
 const ToolbarButton = ({
   active,
@@ -64,41 +90,96 @@ export function Toolbar() {
   const [underline, setUnderline] = useState(false);
   const [canUndo, setCanUndo] = useState(false);
   const [canRedo, setCanRedo] = useState(false);
+  const [blockType, setBlockType] = useState<BlockType>("paragraph");
 
   useEffect(() => {
     return mergeRegister(
       editor.registerUpdateListener(({ editorState }) => {
         editorState.read(() => {
           const sel = $getSelection();
-          if ($isRangeSelection(sel)) {
-            setBold(sel.hasFormat("bold"));
-            setItalic(sel.hasFormat("italic"));
-            setUnderline(sel.hasFormat("underline"));
+          if (!$isRangeSelection(sel)) return;
+
+          setBold(sel.hasFormat("bold"));
+          setItalic(sel.hasFormat("italic"));
+          setUnderline(sel.hasFormat("underline"));
+
+          const anchorNode = sel.anchor.getNode();
+          const block =
+            anchorNode.getKey() === "root"
+              ? anchorNode
+              : $findMatchingParent(
+                  anchorNode,
+                  (n) => n.getParent()?.getKey() === "root"
+                ) ?? anchorNode.getTopLevelElementOrThrow();
+
+          if ($isHeadingNode(block)) {
+            setBlockType(block.getTag() as BlockType);
+          } else if ($isQuoteNode(block)) {
+            setBlockType("quote");
+          } else {
+            setBlockType("paragraph");
           }
         });
       }),
+      editor.registerCommand(SELECTION_CHANGE_COMMAND, () => false, 1),
       editor.registerCommand(
-        SELECTION_CHANGE_COMMAND,
-        () => false,
+        CAN_UNDO_COMMAND,
+        (v) => {
+          setCanUndo(v);
+          return false;
+        },
         1
       ),
-      editor.registerCommand(CAN_UNDO_COMMAND, (v) => {
-        setCanUndo(v);
-        return false;
-      }, 1),
-      editor.registerCommand(CAN_REDO_COMMAND, (v) => {
-        setCanRedo(v);
-        return false;
-      }, 1)
+      editor.registerCommand(
+        CAN_REDO_COMMAND,
+        (v) => {
+          setCanRedo(v);
+          return false;
+        },
+        1
+      )
     );
   }, [editor]);
 
   const align = (a: ElementFormatType) =>
     editor.dispatchCommand(FORMAT_ELEMENT_COMMAND, a);
 
+  const setBlock = (next: BlockType) => {
+    editor.update(() => {
+      const sel = $getSelection();
+      if (!$isRangeSelection(sel)) return;
+      if (next === "paragraph") {
+        $setBlocksType(sel, () => $createParagraphNode());
+      } else if (next === "quote") {
+        $setBlocksType(sel, () => $createQuoteNode());
+      } else {
+        $setBlocksType(sel, () =>
+          $createHeadingNode(next as HeadingTagType)
+        );
+      }
+    });
+  };
+
   return (
     <div className="flex items-center gap-1 border-b border-[var(--border)] bg-[var(--secondary)] px-2 py-1">
-      <span className="text-xs px-2 text-[var(--muted-foreground)]">Normal</span>
+      <Select
+        value={blockType}
+        onValueChange={(v) => setBlock(v as BlockType)}
+      >
+        <SelectTrigger
+          className="h-8 w-32 border-transparent bg-transparent shadow-none focus:ring-0"
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          <SelectValue>{BLOCK_LABELS[blockType]}</SelectValue>
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="paragraph">Normal</SelectItem>
+          <SelectItem value="h1">Heading 1</SelectItem>
+          <SelectItem value="h2">Heading 2</SelectItem>
+          <SelectItem value="h3">Heading 3</SelectItem>
+          <SelectItem value="quote">Quote</SelectItem>
+        </SelectContent>
+      </Select>
       <Sep />
       <ToolbarButton
         ariaLabel="Undo"

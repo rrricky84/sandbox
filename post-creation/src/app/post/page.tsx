@@ -98,10 +98,7 @@ export default function PostPage() {
                   description: "Live stream on Mixcloud",
                   start: new Date(liveStreamAt),
                   durationMinutes: 60,
-                  url:
-                    typeof window !== "undefined"
-                      ? window.location.href
-                      : undefined,
+                  url: "https://www.mixcloud.com/live/colleencosmomurphy/",
                 }}
               />
             </div>
