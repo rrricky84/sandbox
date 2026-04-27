@@ -42,12 +42,14 @@ function HydrateFromStorePlugin() {
   const bodyJson = usePostStore.getState().bodyJson;
   useEffect(() => {
     if (bodyJson) {
-      try {
-        const state = editor.parseEditorState(bodyJson);
-        editor.setEditorState(state);
-      } catch {
-        // ignore stale state
-      }
+      queueMicrotask(() => {
+        try {
+          const state = editor.parseEditorState(bodyJson);
+          editor.setEditorState(state);
+        } catch {
+          // ignore stale state
+        }
+      });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editor]);
