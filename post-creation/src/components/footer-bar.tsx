@@ -2,6 +2,7 @@
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { usePostStore } from "@/lib/post-store";
 
@@ -11,6 +12,9 @@ interface FooterBarProps {
   onPrimary?: () => void;
   primaryDisabled?: boolean;
   secondaryLabel?: string;
+  showPreview?: boolean;
+  previewHref?: string;
+  previewDisabled?: boolean;
 }
 
 export function FooterBar({
@@ -19,6 +23,9 @@ export function FooterBar({
   onPrimary,
   primaryDisabled,
   secondaryLabel = "Save draft",
+  showPreview = false,
+  previewHref = "/post",
+  previewDisabled = false,
 }: FooterBarProps) {
   const router = useRouter();
   const exclusive = usePostStore((s) => s.exclusive);
@@ -45,7 +52,23 @@ export function FooterBar({
           </Label>
         </label>
         <div className="ml-auto flex items-center gap-3">
-          <Button variant="outline">{secondaryLabel}</Button>
+          <Button variant="ghost">{secondaryLabel}</Button>
+          {showPreview && (
+            <Button asChild variant="outline" disabled={previewDisabled}>
+              <Link
+                href={previewHref}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-disabled={previewDisabled}
+                onClick={(e) => {
+                  if (previewDisabled) e.preventDefault();
+                }}
+                className={previewDisabled ? "pointer-events-none opacity-50" : ""}
+              >
+                Preview
+              </Link>
+            </Button>
+          )}
           <Button
             variant="brand"
             onClick={handlePrimary}
