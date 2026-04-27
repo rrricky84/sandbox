@@ -45,10 +45,17 @@ export default function CreatePostPage() {
     tags,
     teaser,
     setField,
+    reset,
   } = usePostStore();
 
   const [teaserOpen, setTeaserOpen] = useState(Boolean(teaser));
   const [tagInput, setTagInput] = useState("");
+
+  const startOver = () => {
+    if (!confirm("Clear the form and start over? This can't be undone.")) return;
+    reset();
+    window.location.reload();
+  };
 
   const canPublish =
     title.trim().length > 0 &&
@@ -78,7 +85,12 @@ export default function CreatePostPage() {
         <div className="mx-auto max-w-[900px] px-6 py-10">
           <div className="flex items-start justify-between mb-8">
             <h1 className="text-3xl font-semibold">Create post</h1>
-            <Button variant="outline">Read our guides</Button>
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" onClick={startOver}>
+                Start over
+              </Button>
+              <Button variant="outline">Read our guides</Button>
+            </div>
           </div>
 
           <div className="space-y-6">
