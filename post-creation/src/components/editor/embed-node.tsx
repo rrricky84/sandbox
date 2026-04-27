@@ -10,7 +10,7 @@ import {
 } from "lexical";
 import { type JSX } from "react";
 
-export type EmbedProvider = "youtube" | "soundcloud" | "mixcloud";
+export type EmbedProvider = "youtube" | "soundcloud" | "mixcloud" | "spotify";
 
 export type SerializedEmbedNode = Spread<
   {
@@ -120,7 +120,11 @@ export class EmbedNode extends DecoratorNode<JSX.Element> {
 
   decorate(): JSX.Element {
     const aspectClass =
-      this.__provider === "soundcloud" ? "aspect-[4/1]" : "aspect-video";
+      this.__provider === "soundcloud"
+        ? "aspect-[4/1]"
+        : this.__provider === "spotify"
+        ? "aspect-[3/1]"
+        : "aspect-video";
     return (
       <div
         className={`embed-card overflow-hidden rounded-lg border border-[var(--border)] my-3 ${aspectClass}`}

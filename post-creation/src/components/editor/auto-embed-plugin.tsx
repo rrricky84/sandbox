@@ -51,6 +51,18 @@ function matchUrl(url: string): MatchResult | null {
     };
   }
 
+  // Spotify: open.spotify.com/<type>/<id>
+  // Types: track, album, playlist, episode, show, artist
+  const sp = url.match(
+    /^https?:\/\/open\.spotify\.com\/(track|album|playlist|episode|show|artist)\/([\w]+)/
+  );
+  if (sp) {
+    return {
+      provider: "spotify",
+      src: `https://open.spotify.com/embed/${sp[1]}/${sp[2]}`,
+    };
+  }
+
   return null;
 }
 
