@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/select";
 import { DateTimePicker } from "@/components/date-time-picker";
 import { FooterBar } from "@/components/footer-bar";
+import { ImagePicker } from "@/components/image-picker";
 import { usePostStore, type PostType } from "@/lib/post-store";
 import { Editor } from "@/components/editor/editor";
 import { Info, Plus, X } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const POST_TYPES: { value: PostType; label: string }[] = [
   { value: "general", label: "General update" },
@@ -44,12 +44,10 @@ export default function CreatePostPage() {
     liveStreamAt,
     tags,
     teaser,
-    imageUrl,
     setField,
   } = usePostStore();
 
-  const [tab, setTab] = useState<"content" | "teaser">("content");
-  const [imageOpen, setImageOpen] = useState(false);
+  const [teaserOpen, setTeaserOpen] = useState(Boolean(teaser));
   const [tagInput, setTagInput] = useState("");
 
   const canPublish =
@@ -84,6 +82,8 @@ export default function CreatePostPage() {
           </div>
 
           <div className="space-y-6">
+            <ImagePicker />
+
             <div className="space-y-2">
               <Label htmlFor="title">Title</Label>
               <Input
@@ -173,73 +173,21 @@ export default function CreatePostPage() {
             <div className="space-y-3">
               <button
                 type="button"
-                onClick={() => setImageOpen((o) => !o)}
+                onClick={() => setTeaserOpen((o) => !o)}
                 className="inline-flex items-center gap-2 text-sm font-medium hover:opacity-80"
               >
                 <Plus className="size-4" />
-                Add a feature image
+                Add teaser text
                 <Info className="size-4 text-[var(--muted-foreground)]" />
               </button>
-              {imageOpen && (
-                <div className="space-y-2">
-                  <div className="bg-neutral-900 rounded-md aspect-[2.4/1] overflow-hidden flex items-center justify-center">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={imageUrl}
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                      alt="Post hero"
-                      className="w-full h-full object-cover opacity-90"
-                    />
-                  </div>
-                  <div className="flex justify-end">
-                    <Button variant="outline" size="sm">
-                      Replace image
-                    </Button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            <div className="space-y-3 pt-2">
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => setTab("content")}
-                  className={cn(
-                    "rounded-full px-4 py-1.5 text-sm transition-colors",
-                    tab === "content"
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                      : "bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)]"
-                  )}
-                >
-                  Post content
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setTab("teaser")}
-                  className={cn(
-                    "rounded-full px-4 py-1.5 text-sm transition-colors",
-                    tab === "teaser"
-                      ? "bg-[var(--primary)] text-[var(--primary-foreground)]"
-                      : "bg-[var(--secondary)] text-[var(--foreground)] hover:bg-[var(--accent)]"
-                  )}
-                >
-                  Teaser text (optional)
-                </button>
-              </div>
-
-              {tab === "content" ? (
-                <Editor />
-              ) : (
+              {teaserOpen && (
                 <div className="space-y-2">
                   <p className="text-sm text-[var(--muted-foreground)]">
                     If you don&rsquo;t enter a teaser we will use the first 250
                     characters of your post
                   </p>
                   <Textarea
-                    rows={6}
+                    rows={4}
                     value={teaser}
                     onChange={(e) => setField("teaser", e.target.value)}
                     placeholder="Write a short summary..."
@@ -247,6 +195,8 @@ export default function CreatePostPage() {
                 </div>
               )}
             </div>
+
+            <Editor />
           </div>
         </div>
       </div>

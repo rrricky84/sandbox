@@ -31,7 +31,7 @@ const initial: Omit<PostState, "setField" | "reset"> = {
   tags: [],
   teaser: "",
   exclusive: false,
-  imageUrl: "/post-image.jpg",
+  imageUrl: "",
 };
 
 export const usePostStore = create<PostState>()(
