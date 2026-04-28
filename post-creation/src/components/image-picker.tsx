@@ -19,7 +19,7 @@ export function ImagePicker() {
   };
 
   return (
-    <div className="rounded-md bg-[var(--secondary)] aspect-[2.4/1] overflow-hidden relative flex items-center justify-center">
+    <div className="rounded-md bg-[var(--secondary)] aspect-[4.8/1] overflow-hidden relative flex items-center justify-center">
       <input
         ref={inputRef}
         type="file"
