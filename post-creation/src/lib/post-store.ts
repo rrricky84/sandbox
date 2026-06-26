@@ -12,6 +12,7 @@ export interface PostState {
   title: string;
   postType: PostType;
   liveStreamAt: string | null;
+  selectedUploadId: string | null;
   bodyJson: string | null;
   bodyHtml: string;
   tags: string[];
@@ -26,6 +27,7 @@ const initial: Omit<PostState, "setField" | "reset"> = {
   title: "",
   postType: "general",
   liveStreamAt: null,
+  selectedUploadId: null,
   bodyJson: null,
   bodyHtml: "",
   tags: [],

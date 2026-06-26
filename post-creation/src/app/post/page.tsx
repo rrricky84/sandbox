@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePostStore } from "@/lib/post-store";
+import { getUploadById, mixcloudWidgetUrl } from "@/lib/uploads";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share, UserPlus } from "lucide-react";
@@ -24,9 +25,15 @@ export default function PostPage() {
     tags,
     postType,
     liveStreamAt,
+    selectedUploadId,
   } = usePostStore();
 
-  const empty = !title && !bodyHtml;
+  const promotedUpload =
+    postType === "promote-upload"
+      ? getUploadById(selectedUploadId)
+      : undefined;
+
+  const empty = !title && !bodyHtml && !promotedUpload;
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-10">
@@ -100,6 +107,18 @@ export default function PostPage() {
                   durationMinutes: 60,
                   url: "https://www.mixcloud.com/live/colleencosmomurphy/",
                 }}
+              />
+            </div>
+          )}
+
+          {promotedUpload && (
+            <div className="overflow-hidden rounded-lg border border-[var(--border)]">
+              <iframe
+                src={mixcloudWidgetUrl(promotedUpload.feed)}
+                className="w-full"
+                style={{ height: 120 }}
+                allow="autoplay"
+                title={promotedUpload.title}
               />
             </div>
           )}

@@ -15,6 +15,7 @@ import { DateTimePicker } from "@/components/date-time-picker";
 import { FooterBar } from "@/components/footer-bar";
 import { ImagePicker } from "@/components/image-picker";
 import { usePostStore, type PostType } from "@/lib/post-store";
+import { UPLOADS } from "@/lib/uploads";
 import { Editor } from "@/components/editor/editor";
 import { Info, Plus, X } from "lucide-react";
 
@@ -42,6 +43,7 @@ export default function CreatePostPage() {
     title,
     postType,
     liveStreamAt,
+    selectedUploadId,
     tags,
     teaser,
     setField,
@@ -59,7 +61,8 @@ export default function CreatePostPage() {
 
   const canPublish =
     title.trim().length > 0 &&
-    (postType !== "live-stream" || Boolean(liveStreamAt));
+    (postType !== "live-stream" || Boolean(liveStreamAt)) &&
+    (postType !== "promote-upload" || Boolean(selectedUploadId));
 
   const addTag = (tag: string) => {
     const t = tag.trim().toLowerCase();
@@ -130,6 +133,27 @@ export default function CreatePostPage() {
                 value={liveStreamAt}
                 onChange={(iso) => setField("liveStreamAt", iso)}
               />
+            )}
+
+            {postType === "promote-upload" && (
+              <div className="space-y-2">
+                <Label>Choose an upload to promote:</Label>
+                <Select
+                  value={selectedUploadId ?? undefined}
+                  onValueChange={(v) => setField("selectedUploadId", v)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Pick one of your uploads" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {UPLOADS.map((u) => (
+                      <SelectItem key={u.id} value={u.id}>
+                        {u.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             )}
 
             <div className="space-y-2">
