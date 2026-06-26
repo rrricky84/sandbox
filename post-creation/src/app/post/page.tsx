@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePostStore } from "@/lib/post-store";
-import { getUploadById, mixcloudWidgetUrl } from "@/lib/uploads";
+import { mixcloudWidgetUrl } from "@/lib/uploads";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share, UserPlus } from "lucide-react";
@@ -25,15 +25,13 @@ export default function PostPage() {
     tags,
     postType,
     liveStreamAt,
-    selectedUploadId,
+    selectedUploadFeed,
   } = usePostStore();
 
-  const promotedUpload =
-    postType === "promote-upload"
-      ? getUploadById(selectedUploadId)
-      : undefined;
+  const promotedFeed =
+    postType === "promote-upload" ? selectedUploadFeed : null;
 
-  const empty = !title && !bodyHtml && !promotedUpload;
+  const empty = !title && !bodyHtml && !promotedFeed;
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-10">
@@ -111,14 +109,14 @@ export default function PostPage() {
             </div>
           )}
 
-          {promotedUpload && (
+          {promotedFeed && (
             <div className="overflow-hidden rounded-lg border border-[var(--border)]">
               <iframe
-                src={mixcloudWidgetUrl(promotedUpload.feed)}
+                src={mixcloudWidgetUrl(promotedFeed)}
                 className="w-full"
                 style={{ height: 120 }}
                 allow="autoplay"
-                title={promotedUpload.title}
+                title="Mixcloud upload"
               />
             </div>
           )}
