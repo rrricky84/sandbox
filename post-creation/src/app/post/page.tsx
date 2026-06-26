@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePostStore } from "@/lib/post-store";
+import { mixcloudWidgetUrl } from "@/lib/uploads";
 import { AddToCalendar } from "@/components/add-to-calendar";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Share, UserPlus } from "lucide-react";
@@ -24,9 +25,14 @@ export default function PostPage() {
     tags,
     postType,
     liveStreamAt,
+    selectedUploadFeed,
+    imageUrl,
   } = usePostStore();
 
-  const empty = !title && !bodyHtml;
+  const promotedFeed =
+    postType === "promote-upload" ? selectedUploadFeed : null;
+
+  const empty = !title && !bodyHtml && !promotedFeed && !imageUrl;
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-10">
@@ -82,6 +88,17 @@ export default function PostPage() {
             </div>
           </div>
 
+          {imageUrl && (
+            <div className="overflow-hidden rounded-lg bg-[var(--secondary)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt={title || "Post hero"}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
+
           {postType === "live-stream" && liveStreamAt && (
             <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--border)] p-4">
               <div>
@@ -100,6 +117,18 @@ export default function PostPage() {
                   durationMinutes: 60,
                   url: "https://www.mixcloud.com/live/colleencosmomurphy/",
                 }}
+              />
+            </div>
+          )}
+
+          {promotedFeed && (
+            <div className="overflow-hidden rounded-lg border border-[var(--border)]">
+              <iframe
+                src={mixcloudWidgetUrl(promotedFeed)}
+                className="w-full"
+                style={{ height: 120 }}
+                allow="autoplay"
+                title="Mixcloud upload"
               />
             </div>
           )}

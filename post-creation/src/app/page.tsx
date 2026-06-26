@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -15,6 +15,11 @@ import { DateTimePicker } from "@/components/date-time-picker";
 import { FooterBar } from "@/components/footer-bar";
 import { ImagePicker } from "@/components/image-picker";
 import { usePostStore, type PostType } from "@/lib/post-store";
+import {
+  fetchRecentUploads,
+  PROMOTE_PROFILE_USERNAME,
+  type MixcloudUpload,
+} from "@/lib/uploads";
 import { Editor } from "@/components/editor/editor";
 import { Info, Plus, X } from "lucide-react";
 
@@ -42,6 +47,7 @@ export default function CreatePostPage() {
     title,
     postType,
     liveStreamAt,
+    selectedUploadFeed,
     tags,
     teaser,
     setField,
@@ -50,6 +56,28 @@ export default function CreatePostPage() {
 
   const [teaserOpen, setTeaserOpen] = useState(Boolean(teaser));
   const [tagInput, setTagInput] = useState("");
+  const [uploads, setUploads] = useState<MixcloudUpload[] | null>(null);
+  const [uploadsError, setUploadsError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (postType !== "promote-upload") return;
+    if (uploads !== null) return;
+    let cancelled = false;
+    fetchRecentUploads(PROMOTE_PROFILE_USERNAME, 10)
+      .then((list) => {
+        if (cancelled) return;
+        setUploads(list);
+        setUploadsError(null);
+      })
+      .catch((e: Error) => {
+        if (cancelled) return;
+        setUploadsError(e.message);
+        setUploads([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [postType, uploads]);
 
   const startOver = () => {
     if (!confirm("Clear the form and start over? This can't be undone.")) return;
@@ -59,7 +87,8 @@ export default function CreatePostPage() {
 
   const canPublish =
     title.trim().length > 0 &&
-    (postType !== "live-stream" || Boolean(liveStreamAt));
+    (postType !== "live-stream" || Boolean(liveStreamAt)) &&
+    (postType !== "promote-upload" || Boolean(selectedUploadFeed));
 
   const addTag = (tag: string) => {
     const t = tag.trim().toLowerCase();
@@ -130,6 +159,47 @@ export default function CreatePostPage() {
                 value={liveStreamAt}
                 onChange={(iso) => setField("liveStreamAt", iso)}
               />
+            )}
+
+            {postType === "promote-upload" && (
+              <div className="space-y-2">
+                <Label>Choose an upload to promote:</Label>
+                <Select
+                  value={selectedUploadFeed ?? undefined}
+                  onValueChange={(v) => {
+                    const picked = uploads?.find((u) => u.feed === v);
+                    setField("selectedUploadFeed", v);
+                    setField("selectedUploadTitle", picked?.title ?? null);
+                  }}
+                  disabled={uploads === null}
+                >
+                  <SelectTrigger>
+                    <SelectValue
+                      placeholder={
+                        uploads === null
+                          ? "Loading your uploads…"
+                          : uploads.length === 0
+                          ? uploadsError
+                            ? "Couldn't load uploads"
+                            : "No uploads found"
+                          : "Pick one of your uploads"
+                      }
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {uploads?.map((u) => (
+                      <SelectItem key={u.feed} value={u.feed}>
+                        {u.title}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {uploadsError && (
+                  <p className="text-sm text-[var(--destructive)]">
+                    {uploadsError}
+                  </p>
+                )}
+              </div>
             )}
 
             <div className="space-y-2">
