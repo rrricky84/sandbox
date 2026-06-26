@@ -26,12 +26,13 @@ export default function PostPage() {
     postType,
     liveStreamAt,
     selectedUploadFeed,
+    imageUrl,
   } = usePostStore();
 
   const promotedFeed =
     postType === "promote-upload" ? selectedUploadFeed : null;
 
-  const empty = !title && !bodyHtml && !promotedFeed;
+  const empty = !title && !bodyHtml && !promotedFeed && !imageUrl;
 
   return (
     <div className="mx-auto max-w-[800px] px-6 py-10">
@@ -86,6 +87,17 @@ export default function PostPage() {
               <Share className="size-4" />
             </div>
           </div>
+
+          {imageUrl && (
+            <div className="overflow-hidden rounded-lg bg-[var(--secondary)]">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt={title || "Post hero"}
+                className="w-full h-auto object-cover"
+              />
+            </div>
+          )}
 
           {postType === "live-stream" && liveStreamAt && (
             <div className="flex items-center justify-between gap-4 rounded-lg border border-[var(--border)] p-4">
