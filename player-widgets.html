@@ -633,6 +633,8 @@
     padding: 8px 12px;
     height: 40px;
     min-width: 0;
+    overflow: visible;
+    position: relative;
   }
   .share-overlay__url-text {
     font-size: 14px;
@@ -939,10 +941,16 @@
 
   function copyUrl(btn) {
     var url = btn.closest('.share-overlay__url-box').querySelector('.share-overlay__url-text').textContent;
-    navigator.clipboard.writeText(url).then(function() {
-      btn.classList.add('is-copied');
-      setTimeout(function() { btn.classList.remove('is-copied'); }, 1500);
-    });
+    var ta = document.createElement('textarea');
+    ta.value = url;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    btn.classList.add('is-copied');
+    setTimeout(function() { btn.classList.remove('is-copied'); }, 1500);
   }
   function toggleShare(id) {
     document.getElementById(id).classList.toggle('is-sharing');
