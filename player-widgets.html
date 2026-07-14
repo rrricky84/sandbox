@@ -328,7 +328,7 @@
   .widget-b {
     display: flex;
     align-items: stretch;
-    height: 75px;
+    height: 88px;
   }
   .widget-b__artwork-wrap {
     flex-shrink: 0;
@@ -373,10 +373,10 @@
     display: flex;
     flex: 1;
     min-width: 0;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
     height: 100%;
-    padding: 16px 16px 16px 0;
+    padding: 12px 16px 12px 0;
   }
   .widget-b__info {
     display: flex;
@@ -386,8 +386,10 @@
     font-weight: 500;
     line-height: 1.4;
     white-space: nowrap;
-    gap: 4px;
     padding-right: 16px;
+    position: relative;
+    justify-content: flex-start;
+    padding-top: 4px;
   }
   .widget-b__title-block {
     display: flex;
@@ -430,11 +432,15 @@
 
   /* Playing info for B */
   .widget-b__playing-row {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 16px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 8px;
-    padding-right: 16px;
     font-size: 11px;
+    height: 15px;
   }
   .widget-b__playing-time {
     color: var(--text-secondary);
