@@ -240,9 +240,9 @@
     flex-direction: column;
     flex: 1;
     min-width: 0;
-    gap: 4px;
     height: 55px;
     justify-content: center;
+    position: relative;
   }
   .widget-a__progress-row {
     display: flex;
@@ -278,11 +278,14 @@
     min-width: 0;
   }
   .widget-a__track-id {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     display: flex;
     align-items: center;
     gap: 4px;
     height: 15px;
-    width: 100%;
     justify-content: center;
   }
   .widget-a__track-id-text {
