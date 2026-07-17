@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>From Wallpaper to Deep Listening — Mixcloud Tracklisting Strategy</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0b0e1a;
+    --ink-raised: #141930;
+    --ink-line: #262d4d;
+    --text: #eceef6;
+    --text-dim: #9aa0b8;
+    --text-faint: #61667a;
+    --brand: #5000ff;
+    --brand-bright: #9d7bff;
+    --pink: #f778eb;
+    --yellow: #f3f810;
+    --green: #0cc281;
+    --red: #ef054b;
+    --mono: "Menlo", "Monaco", "Consolas", monospace;
+  }
+
+  body {
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 56px 88px 84px;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; }
+  .slide > * { max-width: 1180px; }
+
+  .centered { align-items: center; text-align: center; }
+
+  /* Typography */
+  h1 {
+    font-size: 3.6rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    margin-bottom: 28px;
+    text-wrap: balance;
+  }
+  h3 { font-size: 1.15rem; font-weight: 600; margin-bottom: 10px; }
+  p { font-size: 1.2rem; line-height: 1.55; color: var(--text-dim); }
+  .lede { font-size: 1.45rem; color: var(--text); max-width: 900px; }
+  .subtitle { font-size: 1.4rem; color: var(--text-dim); font-weight: 400; margin-top: 18px; }
+
+  .label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--brand-bright);
+    margin-bottom: 22px;
+    font-weight: 600;
+  }
+
+  .accent { color: var(--brand-bright); }
+  .accent-pink { color: var(--pink); }
+  .accent-yellow { color: var(--yellow); }
+  .accent-green { color: var(--green); }
+  .accent-red { color: var(--red); }
+
+  /* Evidence chips — the "receipts" */
+  .ref {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 8px;
+    letter-spacing: 0;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* Cards */
+  .grid { display: grid; gap: 20px; width: 100%; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 12px;
+    padding: 26px 26px 22px;
+  }
+  .card h3 { font-size: 1.25rem; }
+  .card p { font-size: 1rem; line-height: 1.5; }
+  .card .eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .stat { font-size: 3rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+  .stat-sub { font-size: 0.95rem; color: var(--text-dim); line-height: 1.45; }
+
+  /* Lists */
+  ul.plain { list-style: none; }
+  ul.plain li {
+    font-size: 1.15rem;
+    line-height: 1.55;
+    padding: 7px 0 7px 26px;
+    position: relative;
+    color: var(--text);
+  }
+  ul.plain li::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 17px;
+    width: 8px; height: 8px;
+    background: var(--brand-bright);
+    border-radius: 50%;
+  }
+  ul.plain li .sub { display: block; font-size: 0.95rem; color: var(--text-dim); }
+
+  /* Tables */
+  .tablewrap { overflow-x: auto; width: 100%; }
+  table { border-collapse: collapse; width: 100%; font-size: 1rem; }
+  th {
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-faint);
+    padding: 10px 18px 10px 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-weight: 700;
+  }
+  td {
+    padding: 13px 18px 13px 0;
+    border-bottom: 1px solid var(--ink-line);
+    vertical-align: top;
+    line-height: 1.45;
+    color: var(--text-dim);
+  }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 100px;
+    padding: 3px 11px;
+    white-space: nowrap;
+  }
+  .pill-green { background: rgba(12,194,129,0.14); color: var(--green); }
+  .pill-yellow { background: rgba(243,248,16,0.12); color: var(--yellow); }
+  .pill-red { background: rgba(239,5,75,0.14); color: #ff6b9a; }
+  .pill-brand { background: rgba(157,123,255,0.14); color: var(--brand-bright); }
+
+  /* Flywheel */
+  .flywheel { display: flex; align-items: center; justify-content: center; gap: 0; width: 100%; flex-wrap: wrap; }
+  .fly-step {
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 12px;
+    padding: 18px 20px;
+    width: 200px;
+    text-align: center;
+  }
+  .fly-step strong { display: block; font-size: 1.02rem; margin-bottom: 6px; }
+  .fly-step span { font-size: 0.85rem; color: var(--text-dim); line-height: 1.4; display: block; }
+  .fly-arrow { font-size: 1.5rem; color: var(--brand-bright); padding: 0 14px; font-weight: 400; }
+
+  /* Nav */
+  .nav {
+    position: fixed;
+    bottom: 26px;
+    left: 0; right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    z-index: 10;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--ink-line);
+    cursor: pointer;
+    transition: background 0.15s, transform 0.15s;
+    border: none;
+  }
+  .dot.active { background: var(--brand-bright); transform: scale(1.35); }
+  .counter {
+    position: fixed;
+    bottom: 22px; right: 30px;
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    z-index: 10;
+  }
+  .hint {
+    position: fixed;
+    bottom: 22px; left: 30px;
+    font-size: 0.75rem;
+    color: var(--text-faint);
+    z-index: 10;
+  }
+
+  .divider { height: 1px; background: var(--ink-line); width: 100%; margin: 24px 0; }
+
+  .quote {
+    font-size: 1.9rem;
+    font-weight: 500;
+    line-height: 1.35;
+    letter-spacing: -0.01em;
+    max-width: 980px;
+    text-wrap: balance;
+  }
+
+  .footnote { font-size: 0.85rem; color: var(--text-faint); margin-top: 26px; line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 28px 90px; justify-content: flex-start; }
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    h1 { font-size: 2.3rem; }
+    h2 { font-size: 1.6rem; }
+    .quote { font-size: 1.4rem; }
+    .flywheel { flex-direction: column; }
+    .fly-arrow { transform: rotate(90deg); padding: 6px 0; }
+    body { overflow: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .dot { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- 1 · TITLE -->
+<section class="slide centered active">
+  <div class="label">Tracklisting Strategy · July 2026</div>
+  <h1>From wallpaper to<br><span class="accent">deep listening</span></h1>
+  <p class="subtitle">Why track metadata is Mixcloud's most under-leveraged asset —<br>and the three problems we have to solve together, not separately.</p>
+</section>
+
+<!-- 2 · THE PARADOX -->
+<section class="slide centered">
+  <div class="label">The paradox</div>
+  <p class="quote">We pitch Mixcloud at music obsessives.<br>We deliver a <span class="accent-pink">more passive listening experience</span> than the mainstream platforms we define ourselves against.</p>
+  <div class="divider" style="max-width:520px"></div>
+  <p style="max-width:860px">A Spotify listener knows every track they hear, can save it, and it feeds their recommendations. A Mixcloud listener hears an hour of music that washes over them — usually without a single named track. The music is deeper; the metadata experience is shallower.</p>
+</section>
+
+<!-- 3 · THREE SYSTEMS -->
+<section class="slide">
+  <div class="label">Current state</div>
+  <h2>We already run three track-metadata systems.<br>None of them talk to each other.</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="eyebrow accent">1 · Creator tracklists</div>
+      <h3>What DJs type in</h3>
+      <p>Manual entry of artist / track / timestamp per row, stored as <em>Sections</em> against globally deduped Artist &amp; Track entities. Low uptake.</p>
+      <span class="ref">mixcloud/core/music/models.py — Section, Track, Artist</span>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-pink">2 · Fingerprinting</div>
+      <h3>What our vendors hear</h3>
+      <p>ACRCloud (primary) + Gracenote (legacy) identify tracks in every upload — billions of samples — purely for rights enforcement and royalty reporting. Staff-only.</p>
+      <span class="ref">mixcloud/core/track_identification/ — CloudcastSample</span>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-yellow">3 · Search &amp; discovery</div>
+      <h3>What listeners can find</h3>
+      <p>Elasticsearch indexes a show's <strong style="color:var(--text)">title and owner name</strong>. No track names. No artist names. No artist pages. No track saving.</p>
+      <span class="ref">mixcloud/core/search/indexers.py — serialize_cloudcast</span>
+    </div>
+  </div>
+  <p class="footnote">The fingerprint-derived tracklist and the creator-entered tracklist are never reconciled — even our own licensing enforcement (SRPC) ignores what the DJ typed and trusts only the fingerprints.</p>
+</section>
+
+<!-- 4 · SYSTEM 1 EVIDENCE -->
+<section class="slide">
+  <div class="label">System 1 · Creator tracklists</div>
+  <h2>The supply side is manual, unmeasured,<br>and untouched for years</h2>
+  <ul class="plain">
+    <li>Entry is a plain text field per row — <strong>no autocomplete</strong> against the millions of Artist/Track entities we already store.
+      <span class="ref">js/…/Tracklist/SectionInputField/index.jsx</span></li>
+    <li>Import from DJ software exists but is limited: Serato public-playlist URL, Traktor NML file, Cue sheet. <strong>No Rekordbox</strong> — the most common freeform software tag in our own genre analysis (4,300 uses).
+      <span class="ref">js/www/services/tracklistImport/{serato,traktor,cue}.js · docs/how-tos/genre-catalogue-refresh/findings-2026-06.md</span></li>
+    <li>The API can't attach a tracklist at upload — it requires a second <span style="font-family:var(--mono);font-size:0.95em">changeCloudcast</span> call, and every edit deletes and recreates all rows.
+      <span class="ref">mixcloud/core/graphql/mutations/change_cloudcast.py · upload/utils.py — update_sections</span></li>
+    <li><strong>There is no adoption metric anywhere in the codebase.</strong> We say uptake is low, but we can't answer "what % of uploads carry a tracklist" from instrumentation today.</li>
+  </ul>
+</section>
+
+<!-- 5 · SYSTEM 2 EVIDENCE -->
+<section class="slide">
+  <div class="label">System 2 · Fingerprinting</div>
+  <h2>The best track metadata we own<br>never reaches a listener or a creator</h2>
+  <div class="grid grid-3" style="margin-bottom:24px">
+    <div class="card">
+      <div class="stat accent-pink">~34%</div>
+      <p class="stat-sub">Gracenote match rate (66% no-match) across <strong style="color:var(--text)">1.69B samples / 25.4M shows</strong> — the legacy back-catalogue.</p>
+      <span class="ref">docs/spam-detection/queries/04_track_id_no_match.sql</span>
+    </div>
+    <div class="card">
+      <div class="stat accent-green">~60%</div>
+      <p class="stat-sub">ACRCloud match rate (40% no-match) — our primary active provider, with confidence scores per sample.</p>
+      <span class="ref">CloudcastSample.score · track_identification/conf.py</span>
+    </div>
+    <div class="card">
+      <div class="stat accent">0</div>
+      <p class="stat-sub">Product surfaces using this data. Every GraphQL field is staff-gated; the only consumers are admin tools and royalty reporting.</p>
+      <span class="ref">graphql/models/cloudcast — IsStaffOrHasPermission</span>
+    </div>
+  </div>
+  <p>We even re-fingerprint at 100 plays with tighter sampling — investment that only ever benefits the reporting pipeline. The identified tracks, artist names, ISRCs and confidence scores sit one join away from the show page and never make it there.</p>
+</section>
+
+<!-- 6 · SYSTEM 3 EVIDENCE -->
+<section class="slide">
+  <div class="label">System 3 · Search &amp; discovery</div>
+  <h2>Discovery is blind to the music inside the mixes</h2>
+  <ul class="plain">
+    <li>Full-text search matches only <strong>show title + owner name</strong>. Descriptions are explicitly excluded; track and artist names were never indexed.
+      <span class="ref">mixcloud/core/search/query.py — _build_cloudcasts_query</span></li>
+    <li>The plumbing for artist-led discovery already half-exists: artist IDs are indexed as discover tokens (<span style="font-family:var(--mono);font-size:0.95em">a:&lt;artist_id&gt;</span>), and the deprecated REST API still has working "Hot shows featuring X" endpoints — nothing in the product consumes them.
+      <span class="ref">search/indexers.py · api/artist/views.py — ArtistHot/New/Popular</span></li>
+    <li>Listeners can save <strong>shows</strong> (Listen Later, favorites) but not <strong>tracks</strong> — there is no track-level or artist-level action anywhere in the product.
+      <span class="ref">mixcloud/core/listen_later/</span></li>
+    <li>We detect when someone searches for a popular artist name… and show them a purpose message instead of results.
+      <span class="ref">graphql/models/search.py — show_purpose_message</span></li>
+  </ul>
+</section>
+
+<!-- 7 · LICENSING ENVELOPE -->
+<section class="slide">
+  <div class="label">The licensing envelope</div>
+  <h2>The rules constrain less than our product does</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Surface</th><th>Licensing position</th><th>What we've built</th></tr>
+    <tr>
+      <td>Track IDs upfront, pre-listen</td>
+      <td><span class="pill pill-red">Not allowed</span></td>
+      <td>Correctly withheld — but implemented as a <em>paywall</em> (subscribers &amp; premium see full tracklists upfront as a Select perk), not as a listen-gate.</td>
+    </tr>
+    <tr>
+      <td>Featured artists pre-listen</td>
+      <td><span class="pill pill-green">Allowed</span></td>
+      <td>Shipped: "Playing tracks by X, Y and more" (max 5 names) on every show page.</td>
+    </tr>
+    <tr>
+      <td>Search by track / artist</td>
+      <td><span class="pill pill-red">Not allowed</span></td>
+      <td>Correctly absent from search.</td>
+    </tr>
+    <tr>
+      <td>Reveal track IDs <em>as they're heard</em></td>
+      <td><span class="pill pill-green">Allowed</span></td>
+      <td><strong>Nothing.</strong> A now-playing display exists in the player, but no persistent reveal, no history.</td>
+    </tr>
+    <tr>
+      <td>Personal "tracks I've heard" history &amp; saving</td>
+      <td><span class="pill pill-yellow">Verify with labels</span></td>
+      <td><strong>Nothing.</strong> The listener leaves every session empty-handed.</td>
+    </tr>
+  </table>
+  </div>
+  <p class="footnote">Receipts: can_see_premium_features_for_cloudcast (popularity/utils.py) · featuringArtistList resolver · player-widget copy: "Upfront tracklists are available with a subscription." The green rows are the unexplored, licensing-safe space this strategy plays in.</p>
+</section>
+
+<!-- 8 · THESIS -->
+<section class="slide centered">
+  <div class="label">The thesis</div>
+  <p class="quote">One <span class="accent">canonical tracklist</span> per show — assembled from every source we have, confidence-scored, and spent three ways: <span class="accent-pink">listener experience</span>, <span class="accent-yellow">creator value</span>, and <span class="accent-green">label reporting</span>.</p>
+  <div class="divider" style="max-width:520px"></div>
+  <p style="max-width:880px">Tracklist coverage is our metadata supply chain. Every initiative below is a way to raise coverage or to spend it. Solving supply without experience wastes the data; solving experience without supply ships an empty feature. They only work together.</p>
+</section>
+
+<!-- 9 · FLYWHEEL -->
+<section class="slide centered">
+  <div class="label">How it compounds</div>
+  <h2>The tracklist flywheel</h2>
+  <div class="flywheel">
+    <div class="fly-step"><strong>Supply</strong><span>Desktop app, DJ-software ingestion, assisted editor → more shows with tracklists</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Experience</strong><span>Reveal-as-heard, track history, saves → listeners leave with music, not vibes</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Signal</strong><span>Saves &amp; confirmations verify fingerprints and label the no-match 40–66%</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Trust</strong><span>Higher ID hit rate → cheaper, more accurate royalty reporting → label goodwill</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Headroom</strong><span>Better deals &amp; permissions → richer experiences → more creators bring tracklists</span></div>
+  </div>
+  <p class="footnote">Creators join the loop too: tracklisted shows become more discoverable and better credited, which is the strongest incentive to tracklist we've never offered.</p>
+</section>
+
+<!-- 10 · PILLAR 1 -->
+<section class="slide">
+  <div class="label">Pillar 1 · Supply</div>
+  <h2>Make the tracklist automatic,<br>not an act of devotion</h2>
+  <ul class="plain">
+    <li><strong>Ship the desktop app.</strong> The hackweek Serato/Rekordbox ingestion project is the single biggest coverage lever — take it to production and treat local DJ-software history as a first-class upload source.</li>
+    <li><strong>Close the web-import gaps.</strong> Add Rekordbox alongside Serato/Traktor/Cue; accept sections in the upload mutation itself instead of the post-hoc second call.
+      <span class="ref">js/www/services/tracklistImport/ · graphql/mutations/upload_cloudcast.py</span></li>
+    <li><strong>Assist the editor.</strong> Autocomplete against existing Artist/Track entities; pre-fill rows from fingerprint matches ("we heard these — confirm?") so the DJ edits instead of types.</li>
+    <li><strong>Instrument adoption.</strong> Tracklist attach-rate and timestamp-rate become dashboard metrics — today we can't even quantify the problem.
+      <span class="ref">Only proxy today: Cloudcast.is_timestamped</span></li>
+  </ul>
+</section>
+
+<!-- 11 · PILLAR 2 -->
+<section class="slide">
+  <div class="label">Pillar 2 · Truth</div>
+  <h2>Reconcile the two tracklists we already have</h2>
+  <p class="lede" style="margin-bottom:22px">A resolved-tracklist layer that merges creator Sections with fingerprint samples, row by row, with source and confidence on each entry.</p>
+  <div class="grid grid-2">
+    <div class="card">
+      <h3>Creator confirms machine</h3>
+      <p>Fingerprint matches become editor suggestions; a creator's confirmation upgrades a ~60% probabilistic match into ground truth — and corrects the misses.</p>
+    </div>
+    <div class="card">
+      <h3>Machine enriches creator</h3>
+      <p>Typed tracklists get timestamps, ISRCs and canonical artist links from the fingerprint layer — turning free text into linkable entities.</p>
+    </div>
+    <div class="card">
+      <h3>Reporting gets cleaner</h3>
+      <p>Every confirmed row shrinks the unidentified share that manual studies exist to estimate — reducing a real, documented cost and pain point.</p>
+      <span class="ref">docs/schema/manual_study.md · utils.py merge_tracks TODO: "Reporting team hates…"</span>
+    </div>
+    <div class="card">
+      <h3>One source of truth</h3>
+      <p>SRPC enforcement, the listener tracklist and royalty reports currently read three different answers to "what's in this mix". They should read one.</p>
+      <span class="ref">restrictions/utils.py — recompute_srpc_restriction_info</span>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · PILLAR 3 -->
+<section class="slide">
+  <div class="label">Pillar 3 · Experience</div>
+  <h2>Let listeners keep what they hear</h2>
+  <ul class="plain">
+    <li><strong>Reveal as heard.</strong> Tracklist rows unlock as playback passes them — the licensing-safe version of "what's this track?", for everyone, not just subscribers. Builds on the existing now-playing machinery.
+      <span class="ref">js/shared/relay/utils/getCurrentTrack.js</span></li>
+    <li><strong>My track history.</strong> A personal, private log of every identified track you've heard — the artefact that turns a session into a crate-digging trip.</li>
+    <li><strong>Save the track, follow the artist.</strong> Track-level saves feed artist-led discovery: "more shows featuring this artist" — the indexed artist tokens and legacy endpoints prove the query already works.
+      <span class="ref">search discover_tag a:&lt;artist_id&gt; · api/artist/views.py</span></li>
+    <li><strong>Creators get credited.</strong> Artist pages aggregate the shows that feature them — a reason for artists and labels to <em>want</em> tracklists on Mixcloud.</li>
+  </ul>
+  <p class="footnote">Upfront tracklists remain the subscriber perk — reveal-as-heard doesn't cannibalise it; it advertises it.</p>
+</section>
+
+<!-- 13 · SEQUENCING -->
+<section class="slide">
+  <div class="label">Sequencing</div>
+  <h2>Now / Next / Later</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Horizon</th><th>Moves</th><th>Why this order</th></tr>
+    <tr>
+      <td><span class="pill pill-brand">Now</span></td>
+      <td>Instrument tracklist attach-rate · productionise the desktop app · Rekordbox web import · editor autocomplete</td>
+      <td>Pure supply. No licensing dependency, no new data model. Sets the baseline every later bet is measured against.</td>
+    </tr>
+    <tr>
+      <td><span class="pill pill-brand">Next</span></td>
+      <td>Resolved-tracklist layer (Sections × fingerprints) · fingerprint-assisted suggestions in the editor · reveal-as-heard on the show page</td>
+      <td>Truth + first listener value. Requires the supply baseline and one label conversation (confirm post-listen reveal).</td>
+    </tr>
+    <tr>
+      <td><span class="pill pill-brand">Later</span></td>
+      <td>Track history &amp; saves · artist follow · artist-led discovery &amp; credit pages</td>
+      <td>Spends accumulated coverage. Only credible once most listened shows resolve a tracklist.</td>
+    </tr>
+  </table>
+  </div>
+  <p class="footnote">Measures: % of new uploads with a tracklist · % timestamped · fingerprint hit-rate on listened minutes · tracks saved per listening hour · return listens originating from a track/artist touchpoint.</p>
+</section>
+
+<!-- 14 · RISKS & ASK -->
+<section class="slide">
+  <div class="label">Risks &amp; the ask</div>
+  <h2>What could bite, and what I'm asking for</h2>
+  <div class="grid grid-2" style="margin-bottom:26px">
+    <div class="card">
+      <h3 class="accent-pink">Risks to hold</h3>
+      <p>· Label deals must explicitly cover post-listen reveal &amp; personal history — verify before building.<br>
+         · Fingerprints can expose unreleased edits/dubs a DJ meant to keep secret — creators need a per-show veto.<br>
+         · Match quality below ~60% makes a bad suggestion UX — confidence thresholds matter more than coverage.</p>
+    </div>
+    <div class="card">
+      <h3 class="accent-green">The ask</h3>
+      <p>· Sanction a discovery sprint on the resolved-tracklist layer.<br>
+         · Commit the desktop app to a production timeline.<br>
+         · Instrument adoption metrics this quarter.<br>
+         · Open the label conversation on the two green-lit-but-unbuilt surfaces.</p>
+    </div>
+  </div>
+  <p class="quote" style="font-size:1.5rem">The data, the pipelines and half the plumbing already exist.<br>What's missing is the decision to point them at the listener.</p>
+</section>
+
+<div class="nav" id="nav"></div>
+<div class="counter" id="counter"></div>
+<div class="hint">← → to navigate</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  slides.forEach((s, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => go(i));
+    nav.appendChild(d);
+  });
+  const dots = nav.querySelectorAll('.dot');
+
+  function go(i) {
+    if (i < 0 || i >= slides.length) return;
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    slides[current].scrollTop = 0;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(current - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(slides.length - 1);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.nav') || e.target.closest('a')) return;
+    const x = e.clientX / window.innerWidth;
+    if (x > 0.8) go(current + 1);
+    else if (x < 0.2) go(current - 1);
+  });
+
+  counter.textContent = '1 / ' + slides.length;
+</script>
+
+</body>
+</html>
