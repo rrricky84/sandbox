@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Listening — Mixcloud Tracklisting Strategy (Tight Cut)</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --ink: #0b0e1a;
+    --ink-raised: #141930;
+    --ink-line: #262d4d;
+    --text: #eceef6;
+    --text-dim: #9aa0b8;
+    --text-faint: #61667a;
+    --brand: #5000ff;
+    --brand-bright: #9d7bff;
+    --pink: #f778eb;
+    --yellow: #f3f810;
+    --green: #0cc281;
+    --red: #ef054b;
+    --mono: "Menlo", "Monaco", "Consolas", monospace;
+  }
+
+  body {
+    font-family: "DM Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--ink);
+    color: var(--text);
+    overflow: hidden;
+    height: 100vh;
+  }
+
+  .slide {
+    display: none;
+    width: 100vw;
+    height: 100vh;
+    padding: 56px 88px 84px;
+    flex-direction: column;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  .slide.active { display: flex; }
+  .slide > * { max-width: 1180px; }
+  .centered { align-items: center; text-align: center; }
+
+  h1 { font-size: 3.8rem; font-weight: 700; line-height: 1.1; letter-spacing: -0.025em; text-wrap: balance; }
+  h2 { font-size: 2.4rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; margin-bottom: 30px; text-wrap: balance; }
+  h3 { font-size: 1.2rem; font-weight: 600; margin-bottom: 10px; }
+  p { font-size: 1.2rem; line-height: 1.55; color: var(--text-dim); }
+  .subtitle { font-size: 1.4rem; color: var(--text-dim); font-weight: 400; margin-top: 18px; }
+
+  .label {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--brand-bright);
+    margin-bottom: 22px;
+    font-weight: 600;
+  }
+
+  .accent { color: var(--brand-bright); }
+  .accent-pink { color: var(--pink); }
+  .accent-yellow { color: var(--yellow); }
+  .accent-green { color: var(--green); }
+
+  .ref {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--text-faint);
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 4px;
+    padding: 2px 8px;
+    margin-top: 10px;
+    white-space: nowrap;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .grid { display: grid; gap: 20px; width: 100%; }
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .grid-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 12px;
+    padding: 26px 26px 22px;
+  }
+  .card p { font-size: 1.05rem; line-height: 1.5; }
+  .card .eyebrow {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    margin-bottom: 12px;
+  }
+
+  .stat { font-size: 3.4rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+  .stat-sub { font-size: 0.95rem; color: var(--text-dim); line-height: 1.45; }
+
+  .tablewrap { overflow-x: auto; width: 100%; }
+  table { border-collapse: collapse; width: 100%; font-size: 1.05rem; }
+  th {
+    text-align: left;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--text-faint);
+    padding: 10px 18px 10px 0;
+    border-bottom: 1px solid var(--ink-line);
+    font-weight: 700;
+  }
+  td { padding: 14px 18px 14px 0; border-bottom: 1px solid var(--ink-line); vertical-align: top; line-height: 1.45; color: var(--text-dim); }
+  td:first-child { color: var(--text); font-weight: 600; }
+
+  .pill {
+    display: inline-block;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    border-radius: 100px;
+    padding: 3px 11px;
+    white-space: nowrap;
+  }
+  .pill-green { background: rgba(12,194,129,0.14); color: var(--green); }
+  .pill-yellow { background: rgba(243,248,16,0.12); color: var(--yellow); }
+  .pill-red { background: rgba(239,5,75,0.14); color: #ff6b9a; }
+  .pill-brand { background: rgba(157,123,255,0.14); color: var(--brand-bright); }
+
+  .flywheel { display: flex; align-items: stretch; justify-content: center; width: 100%; flex-wrap: wrap; }
+  .fly-step {
+    background: var(--ink-raised);
+    border: 1px solid var(--ink-line);
+    border-radius: 12px;
+    padding: 18px 18px;
+    width: 190px;
+    text-align: center;
+  }
+  .fly-step strong { display: block; font-size: 1.05rem; margin-bottom: 6px; }
+  .fly-step span { font-size: 0.88rem; color: var(--text-dim); line-height: 1.4; display: block; }
+  .fly-arrow { font-size: 1.5rem; color: var(--brand-bright); padding: 0 12px; align-self: center; }
+
+  .nav { position: fixed; bottom: 26px; left: 0; right: 0; display: flex; justify-content: center; align-items: center; gap: 8px; z-index: 10; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-line); cursor: pointer; transition: background 0.15s, transform 0.15s; border: none; }
+  .dot.active { background: var(--brand-bright); transform: scale(1.35); }
+  .counter { position: fixed; bottom: 22px; right: 30px; font-family: var(--mono); font-size: 0.75rem; color: var(--text-faint); z-index: 10; }
+  .hint { position: fixed; bottom: 22px; left: 30px; font-size: 0.75rem; color: var(--text-faint); z-index: 10; }
+
+  .divider { height: 1px; background: var(--ink-line); width: 100%; margin: 24px 0; }
+  .quote { font-size: 2.1rem; font-weight: 500; line-height: 1.35; letter-spacing: -0.01em; max-width: 980px; text-wrap: balance; }
+  .footnote { font-size: 0.85rem; color: var(--text-faint); margin-top: 26px; line-height: 1.5; }
+
+  @media (max-width: 900px) {
+    .slide { padding: 40px 28px 90px; justify-content: flex-start; }
+    .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+    h1 { font-size: 2.3rem; }
+    h2 { font-size: 1.7rem; }
+    .quote { font-size: 1.5rem; }
+    .flywheel { flex-direction: column; align-items: center; }
+    .fly-arrow { transform: rotate(90deg); padding: 6px 0; }
+    body { overflow: auto; }
+  }
+
+  @media (prefers-reduced-motion: reduce) { .dot { transition: none; } }
+</style>
+</head>
+<body>
+
+<!-- 1 · TITLE -->
+<section class="slide centered active">
+  <div class="label">Tracklisting Strategy · July 2026</div>
+  <h1>From wallpaper to<br><span class="accent">deep listening</span></h1>
+  <p class="subtitle">Track metadata is Mixcloud's most under-leveraged asset.</p>
+</section>
+
+<!-- 2 · PARADOX -->
+<section class="slide centered">
+  <div class="label">The paradox</div>
+  <p class="quote">We pitch Mixcloud at music obsessives — and deliver <span class="accent-pink">more passive listening</span> than the platforms we define ourselves against.</p>
+  <div class="divider" style="max-width:520px"></div>
+  <p>An hour of music. The listener leaves with nothing.</p>
+</section>
+
+<!-- 3 · TWO SYSTEMS -->
+<section class="slide">
+  <div class="label">Current state</div>
+  <h2>Two track-metadata systems.<br>Neither talks to the other. Discovery sees neither.</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="eyebrow accent">System 1 · Creator tracklists</div>
+      <p>Manual entry. No autocomplete, no Rekordbox import. Low uptake, untouched for years.</p>
+      <span class="ref">mixcloud/core/music/models.py — Section</span>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-pink">System 2 · Fingerprinting</div>
+      <p>ACRCloud + Gracenote identify tracks at scale — for rights and royalties only. Staff-gated.</p>
+      <span class="ref">mixcloud/core/track_identification/</span>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-yellow">Where neither lands · Discovery</div>
+      <p>Search indexes title + owner name. No tracks, no artists, no saving.</p>
+      <span class="ref">mixcloud/core/search/indexers.py</span>
+    </div>
+  </div>
+  <p class="footnote">Even SRPC licensing enforcement ignores what the DJ typed — it trusts only the fingerprints.</p>
+</section>
+
+<!-- 4 · RECEIPTS -->
+<section class="slide">
+  <div class="label">The receipts</div>
+  <h2>We already identify the music.<br>Nobody ever sees it.</h2>
+  <div class="grid grid-4">
+    <div class="card">
+      <div class="stat accent-pink">34%</div>
+      <p class="stat-sub">Gracenote match rate — 1.69B samples, 25.4M shows.</p>
+    </div>
+    <div class="card">
+      <div class="stat accent-green">60%</div>
+      <p class="stat-sub">ACRCloud match rate — primary provider, confidence-scored.</p>
+    </div>
+    <div class="card">
+      <div class="stat accent">0</div>
+      <p class="stat-sub">Product surfaces using any of it.</p>
+    </div>
+    <div class="card">
+      <div class="stat accent-yellow">∅</div>
+      <p class="stat-sub">Adoption metric. We can't measure tracklist uptake at all.</p>
+    </div>
+  </div>
+  <p class="footnote">docs/spam-detection/queries/04_track_id_no_match.sql · staff-only GraphQL fields · only proxy: Cloudcast.is_timestamped</p>
+</section>
+
+<!-- 5 · LICENSING -->
+<section class="slide">
+  <div class="label">The licensing envelope</div>
+  <h2>The rules constrain less than our product does</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Surface</th><th>Licensing</th><th>Built</th></tr>
+    <tr><td>Track IDs upfront</td><td><span class="pill pill-red">Not allowed</span></td><td>Withheld — but as a paywall, not a listen-gate</td></tr>
+    <tr><td>Featured artists upfront</td><td><span class="pill pill-green">Allowed</span></td><td>Shipped</td></tr>
+    <tr><td>Search by track / artist</td><td><span class="pill pill-red">Not allowed</span></td><td>Absent</td></tr>
+    <tr><td>Reveal IDs as heard</td><td><span class="pill pill-green">Allowed</span></td><td><strong>Nothing</strong></td></tr>
+    <tr><td>Personal history &amp; saves</td><td><span class="pill pill-yellow">Verify</span></td><td><strong>Nothing</strong></td></tr>
+  </table>
+  </div>
+  <p class="footnote">The green rows are the unbuilt, licensing-safe space this strategy plays in.</p>
+</section>
+
+<!-- 6 · THESIS -->
+<section class="slide centered">
+  <div class="label">The thesis</div>
+  <p class="quote">One <span class="accent">canonical tracklist</span> per show — assembled from every source, confidence-scored, spent three ways: <span class="accent-pink">listener experience</span>, <span class="accent-yellow">creator value</span>, <span class="accent-green">label reporting</span>.</p>
+</section>
+
+<!-- 7 · FLYWHEEL -->
+<section class="slide centered">
+  <div class="label">How it compounds</div>
+  <h2>The tracklist flywheel</h2>
+  <div class="flywheel">
+    <div class="fly-step"><strong>Supply</strong><span>Tracklists on every upload</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Experience</strong><span>Listeners keep what they hear</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Signal</strong><span>Saves &amp; confirmations label the misses</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Trust</strong><span>Cleaner reporting, label goodwill</span></div>
+    <div class="fly-arrow">→</div>
+    <div class="fly-step"><strong>Headroom</strong><span>Better deals, richer product</span></div>
+  </div>
+</section>
+
+<!-- 8 · PILLARS -->
+<section class="slide">
+  <div class="label">The plan</div>
+  <h2>Three pillars, solved together</h2>
+  <div class="grid grid-3">
+    <div class="card">
+      <div class="eyebrow accent">Supply</div>
+      <h3>Make tracklists automatic</h3>
+      <p>Ship the desktop app. Add Rekordbox. Autocomplete the editor. Instrument attach-rate.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-pink">Truth</div>
+      <h3>One resolved tracklist</h3>
+      <p>Creator × fingerprint × Trackdrop watermark, per row, with confidence. Creators confirm the machine; the machine enriches the creators.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-yellow">Experience</div>
+      <h3>Keep what you hear</h3>
+      <p>Reveal as heard. Track history. Save the track, follow the artist, find more shows featuring them.</p>
+    </div>
+  </div>
+  <p class="footnote">Watermarks cover fingerprinting's blind spot: unreleased promo material — detected deterministically, not probabilistically.</p>
+</section>
+
+<!-- 9 · SEQUENCING -->
+<section class="slide">
+  <div class="label">Sequencing</div>
+  <h2>Now / Next / Later</h2>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Horizon</th><th>Moves</th><th>Why</th></tr>
+    <tr><td><span class="pill pill-brand">Now</span></td><td>Instrument attach-rate · desktop app to production · Rekordbox import · autocomplete</td><td>Pure supply. No licensing dependency.</td></tr>
+    <tr><td><span class="pill pill-brand">Next</span></td><td>Resolved-tracklist layer · fingerprint-assisted editor · reveal-as-heard</td><td>Truth + first listener value. One label conversation.</td></tr>
+    <tr><td><span class="pill pill-brand">Later</span></td><td>Track history &amp; saves · artist follow · artist-led discovery</td><td>Spends the coverage the first two earn.</td></tr>
+  </table>
+  </div>
+  <p class="footnote">Measures: % uploads with tracklists · % timestamped · ID hit-rate on listened minutes · saves per listening hour.</p>
+</section>
+
+<!-- 10 · NORTH STAR -->
+<section class="slide">
+  <div class="label">North star</div>
+  <h2>Where this goes: <span class="accent">lineage</span></h2>
+  <div class="grid grid-3" style="margin-bottom:24px">
+    <div class="card">
+      <div class="eyebrow accent">Today · Permanence</div>
+      <p>The archive. Sets live forever, legally.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-pink">Next · Depth</div>
+      <p>This strategy. Listeners leave with the music they heard.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-yellow">Then · Lineage</div>
+      <p>Every track remembers who put you onto it. Listeners graduate into selectors.</p>
+    </div>
+  </div>
+  <p>And lineage runs upstream: Trackdrop-watermarked promos, detected in mixes, tell a label <strong style="color:var(--text)">which DJ played it and which fans heard it</strong>. Attribution becomes a product we sell — and it funds the label trust this strategy spends.</p>
+</section>
+
+<!-- 11 · ASK -->
+<section class="slide">
+  <div class="label">Risks &amp; the ask</div>
+  <h2>What I'm asking for</h2>
+  <div class="grid grid-2" style="margin-bottom:26px">
+    <div class="card">
+      <h3 class="accent-pink">Hold</h3>
+      <p>· Label sign-off on post-listen reveal &amp; history<br>· Creator veto for secret edits &amp; dubs<br>· Confidence thresholds before suggestion UX</p>
+    </div>
+    <div class="card">
+      <h3 class="accent-green">Approve</h3>
+      <p>· Discovery sprint on the resolved tracklist<br>· Desktop app production timeline<br>· Adoption metrics this quarter<br>· Open the label conversation</p>
+    </div>
+  </div>
+  <p class="quote" style="font-size:1.6rem">The data and pipelines exist.<br>What's missing is the decision to point them at the listener.</p>
+</section>
+
+<div class="nav" id="nav"></div>
+<div class="counter" id="counter"></div>
+<div class="hint">← → to navigate</div>
+
+<script>
+  const slides = document.querySelectorAll('.slide');
+  const nav = document.getElementById('nav');
+  const counter = document.getElementById('counter');
+  let current = 0;
+
+  slides.forEach((s, i) => {
+    const d = document.createElement('button');
+    d.className = 'dot' + (i === 0 ? ' active' : '');
+    d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+    d.addEventListener('click', () => go(i));
+    nav.appendChild(d);
+  });
+  const dots = nav.querySelectorAll('.dot');
+
+  function go(i) {
+    if (i < 0 || i >= slides.length) return;
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+    counter.textContent = (current + 1) + ' / ' + slides.length;
+    slides[current].scrollTop = 0;
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); go(current + 1); }
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); go(current - 1); }
+    if (e.key === 'Home') go(0);
+    if (e.key === 'End') go(slides.length - 1);
+  });
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.nav') || e.target.closest('a')) return;
+    const x = e.clientX / window.innerWidth;
+    if (x > 0.8) go(current + 1);
+    else if (x < 0.2) go(current - 1);
+  });
+
+  counter.textContent = '1 / ' + slides.length;
+</script>
+
+</body>
+</html>
