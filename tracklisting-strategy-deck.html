@@ -278,24 +278,24 @@
 <!-- 3 · THREE SYSTEMS -->
 <section class="slide">
   <div class="label">Current state</div>
-  <h2>We already run three track-metadata systems.<br>None of them talk to each other.</h2>
+  <h2>We run two parallel track-metadata systems.<br>Neither talks to the other — and discovery sees neither.</h2>
   <div class="grid grid-3">
     <div class="card">
-      <div class="eyebrow accent">1 · Creator tracklists</div>
+      <div class="eyebrow accent">System 1 · Creator tracklists</div>
       <h3>What DJs type in</h3>
       <p>Manual entry of artist / track / timestamp per row, stored as <em>Sections</em> against globally deduped Artist &amp; Track entities. Low uptake.</p>
       <span class="ref">mixcloud/core/music/models.py — Section, Track, Artist</span>
     </div>
     <div class="card">
-      <div class="eyebrow accent-pink">2 · Fingerprinting</div>
+      <div class="eyebrow accent-pink">System 2 · Fingerprinting</div>
       <h3>What our vendors hear</h3>
       <p>ACRCloud (primary) + Gracenote (legacy) identify tracks in every upload — billions of samples — purely for rights enforcement and royalty reporting. Staff-only.</p>
       <span class="ref">mixcloud/core/track_identification/ — CloudcastSample</span>
     </div>
     <div class="card">
-      <div class="eyebrow accent-yellow">3 · Search &amp; discovery</div>
+      <div class="eyebrow accent-yellow">Where neither lands · Discovery</div>
       <h3>What listeners can find</h3>
-      <p>Elasticsearch indexes a show's <strong style="color:var(--text)">title and owner name</strong>. No track names. No artist names. No artist pages. No track saving.</p>
+      <p>Elasticsearch indexes a show's <strong style="color:var(--text)">title and owner name</strong> — nothing from either system reaches it. No track names, no artist names, no artist pages, no track saving.</p>
       <span class="ref">mixcloud/core/search/indexers.py — serialize_cloudcast</span>
     </div>
   </div>
@@ -343,7 +343,7 @@
 
 <!-- 6 · SYSTEM 3 EVIDENCE -->
 <section class="slide">
-  <div class="label">System 3 · Search &amp; discovery</div>
+  <div class="label">The discovery gap</div>
   <h2>Discovery is blind to the music inside the mixes</h2>
   <ul class="plain">
     <li>Full-text search matches only <strong>show title + owner name</strong>. Descriptions are explicitly excluded; track and artist names were never indexed.
