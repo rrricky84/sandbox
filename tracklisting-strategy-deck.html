@@ -437,8 +437,8 @@
 <!-- 11 · PILLAR 2 -->
 <section class="slide">
   <div class="label">Pillar 2 · Truth</div>
-  <h2>Reconcile the two tracklists we already have</h2>
-  <p class="lede" style="margin-bottom:22px">A resolved-tracklist layer that merges creator Sections with fingerprint samples, row by row, with source and confidence on each entry.</p>
+  <h2>Reconcile the two tracklists we already have —<br>and get a third source for free</h2>
+  <p class="lede" style="margin-bottom:22px">A resolved-tracklist layer that merges creator Sections with fingerprint samples — and, as Trackdrop watermarking lands, deterministic watermark detections — row by row, with source and confidence on each entry.</p>
   <div class="grid grid-2">
     <div class="card">
       <h3>Creator confirms machine</h3>
@@ -459,6 +459,7 @@
       <span class="ref">restrictions/utils.py — recompute_srpc_restriction_info</span>
     </div>
   </div>
+  <p class="footnote">Watermarks and fingerprints cover each other's blind spots: fingerprinting fails hardest on unreleased promo material — exactly the tracks Trackdrop watermarks. Detection is a yes/no read, not a probabilistic match.</p>
 </section>
 
 <!-- 12 · PILLAR 3 -->
@@ -503,7 +504,30 @@
   <p class="footnote">Measures: % of new uploads with a tracklist · % timestamped · fingerprint hit-rate on listened minutes · tracks saved per listening hour · return listens originating from a track/artist touchpoint.</p>
 </section>
 
-<!-- 14 · RISKS & ASK -->
+<!-- 14 · NORTH STAR -->
+<section class="slide">
+  <div class="label">North star</div>
+  <h2>Where this goes: <span class="accent">lineage</span></h2>
+  <p class="lede" style="margin-bottom:26px">Everywhere else, music arrives with no story — a song with no past. Mixcloud can sell the opposite: where a track came from, who made it, who played it, who put you onto it, and who you pass it to next.</p>
+  <div class="grid grid-3" style="margin-bottom:24px">
+    <div class="card">
+      <div class="eyebrow accent">Today · Permanence</div>
+      <p>The archive. Sets live forever, legally — the foundation everything else stands on.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-pink">Next · Depth</div>
+      <p>This strategy. Listeners leave every session with the music they heard — revealed, kept, saved. The missing middle between today and the vision.</p>
+    </div>
+    <div class="card">
+      <div class="eyebrow accent-yellow">Then · Lineage</div>
+      <p>Every saved track remembers who put you onto it and through which show. Listeners graduate into selectors. Taste has a bloodline, and you have a place in it.</p>
+    </div>
+  </div>
+  <p><strong style="color:var(--text)">And lineage runs upstream too.</strong> Trackdrop watermarks every promo it delivers — so when that record surfaces in a Mixcloud mix, we can tell the label which DJ played it and which fans heard it. Attribution becomes a product we sell to rights-holders, not just a report we owe them — and it funds the label trust this whole strategy spends.</p>
+  <span class="ref">Trackdrop ↔ Mixcloud analytics handoff already live: mixcloud/core/analytics/events.py</span>
+</section>
+
+<!-- 15 · RISKS & ASK -->
 <section class="slide">
   <div class="label">Risks &amp; the ask</div>
   <h2>What could bite, and what I'm asking for</h2>
