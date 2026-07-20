@@ -410,13 +410,6 @@
     if (e.key === 'End') go(slides.length - 1);
   });
 
-  document.addEventListener('click', (e) => {
-    if (e.target.closest('.nav') || e.target.closest('a')) return;
-    const x = e.clientX / window.innerWidth;
-    if (x > 0.8) go(current + 1);
-    else if (x < 0.2) go(current - 1);
-  });
-
   counter.textContent = '1 / ' + slides.length;
 </script>
 
