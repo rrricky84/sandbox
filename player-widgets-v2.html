@@ -59,7 +59,10 @@
     color: var(--text-primary);
     padding: 48px;
     width: 100%;
-    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
   }
   .page-title {
     font-size: 42px;
@@ -89,7 +92,7 @@
     border: 1px solid var(--text-primary);
   }
 
-  .tab-content { display: none; }
+  .tab-content { display: none; flex: 1; overflow-y: auto; min-height: 0; }
 
   .resize-wrap {
     container-type: inline-size;
@@ -612,13 +615,26 @@
   /* ===========================
      PICTURE (shared: full & color bgd)
      =========================== */
+  #tab-picture-full, #tab-picture-color {
+    flex: 1;
+    display: none;
+    flex-direction: column;
+    min-height: 0;
+    padding-bottom: 20px;
+  }
+  #tab-picture-full .resize-wrap,
+  #tab-picture-color .resize-wrap {
+    flex: 1;
+    min-height: 0;
+    margin-bottom: 0;
+  }
   .widget-picture {
     border-radius: 8px;
     overflow: hidden;
     background: var(--surface-primary);
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    height: 100%;
   }
   .widget-picture__image-area {
     position: relative;
@@ -1177,7 +1193,9 @@
 <script>
   function switchTab(id) {
     document.querySelectorAll('.tab-content').forEach(function(el) { el.style.display = 'none'; });
-    document.getElementById('tab-' + id).style.display = 'block';
+    var tabEl = document.getElementById('tab-' + id);
+    var isPicture = id === 'picture-full' || id === 'picture-color';
+    tabEl.style.display = isPicture ? 'flex' : 'block';
     document.querySelectorAll('.tab').forEach(function(el) { el.classList.replace('tab--active', 'tab--inactive'); });
     event.target.classList.replace('tab--inactive', 'tab--active');
   }
