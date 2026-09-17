@@ -644,13 +644,15 @@
 
   .widget-picture--color .widget-picture__artwork-inset {
     aspect-ratio: 1 / 1;
-    height: 100%;
+    width: 50%;
+    max-width: 300px;
+    margin-top: 32px;
     border-radius: 4px;
     background: linear-gradient(135deg, #90c5d0 0%, #d4c5b0 50%, #b0a090 100%);
   }
   .widget-picture--color .widget-picture__image-area {
-    align-items: center;
-    padding: 24px;
+    align-items: flex-start;
+    justify-content: center;
   }
   .widget-picture__overlay {
     position: absolute;
@@ -746,20 +748,19 @@
     display: flex;
     align-items: center;
     height: 5px;
-    margin: 12px 16px;
     border-radius: 100px;
     overflow: hidden;
   }
   .widget-picture__progress-filled {
     height: 5px;
-    background: var(--surface-secondary);
+    background: rgba(255,255,255,0.9);
     flex-shrink: 0;
     width: 0;
   }
   .widget-picture__progress-remaining {
     flex: 1;
     height: 5px;
-    background: var(--surface-tertiary);
+    background: rgba(255,255,255,0.3);
     min-width: 0;
   }
   .widget-picture.is-playing .widget-picture__progress-filled { width: 64px; }
@@ -1096,6 +1097,10 @@
                   <div class="widget-picture__byline">by Secret Sound Service</div>
                 </div>
               </div>
+              <div class="widget-picture__progress-track">
+                <div class="widget-picture__progress-filled"></div>
+                <div class="widget-picture__progress-remaining"></div>
+              </div>
               <div class="widget-picture__actions-row">
                 <div class="widget-picture__actions-icons">
                   <button class="icon-btn" onclick="toggleFav(this)">
@@ -1113,10 +1118,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="widget-picture__progress-track">
-          <div class="widget-picture__progress-filled"></div>
-          <div class="widget-picture__progress-remaining"></div>
         </div>
       </div>
     </div>
@@ -1142,6 +1143,10 @@
                   <div class="widget-picture__byline">by Secret Sound Service</div>
                 </div>
               </div>
+              <div class="widget-picture__progress-track">
+                <div class="widget-picture__progress-filled"></div>
+                <div class="widget-picture__progress-remaining"></div>
+              </div>
               <div class="widget-picture__actions-row">
                 <div class="widget-picture__actions-icons">
                   <button class="icon-btn" onclick="toggleFav(this)">
@@ -1159,10 +1164,6 @@
               </div>
             </div>
           </div>
-        </div>
-        <div class="widget-picture__progress-track">
-          <div class="widget-picture__progress-filled"></div>
-          <div class="widget-picture__progress-remaining"></div>
         </div>
       </div>
     </div>
