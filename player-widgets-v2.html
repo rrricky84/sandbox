@@ -184,6 +184,12 @@
     flex: 1;
     min-width: 0;
   }
+  .widget-classic__center-main {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
   .widget-classic__upper {
     flex: 1;
     padding-top: 16px;
@@ -445,6 +451,12 @@
     flex: 1;
     min-width: 0;
     padding: 0 16px;
+  }
+  .widget-mini__center-main {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
   }
   .widget-mini__play-btn {
     width: 35px;
@@ -883,7 +895,7 @@
       <div id="cw" class="widget widget-classic">
         <div class="widget-classic__artwork-wrap"><div class="widget-classic__artwork"></div></div>
         <div class="widget-classic__center">
-          <div class="widget-classic__center-main" style="display:flex; flex-direction:column; flex:1; min-width:0;">
+          <div class="widget-classic__center-main">
             <div class="widget-classic__upper">
               <div class="widget-classic__play-row">
                 <button class="widget-classic__play-btn" onclick="toggle('cw')">
@@ -959,7 +971,7 @@
     <div class="resize-wrap">
       <div id="cn" class="widget widget-classic">
         <div class="widget-classic__center">
-          <div class="widget-classic__center-main" style="display:flex; flex-direction:column; flex:1; min-width:0;">
+          <div class="widget-classic__center-main">
             <div class="widget-classic__upper">
               <div class="widget-classic__play-row">
                 <button class="widget-classic__play-btn" onclick="toggle('cn')">
@@ -1036,7 +1048,7 @@
       <div id="mw" class="widget widget-mini">
         <div class="widget-mini__artwork-wrap"><div class="widget-mini__artwork"></div></div>
         <div class="widget-mini__center">
-          <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
+          <div class="widget-mini__center-main">
             <div class="widget-mini__default-row">
               <button class="widget-mini__play-btn" onclick="toggle('mw')"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
@@ -1092,7 +1104,7 @@
     <div class="resize-wrap">
       <div id="mn" class="widget widget-mini">
         <div class="widget-mini__center">
-          <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
+          <div class="widget-mini__center-main">
             <div class="widget-mini__default-row">
               <button class="widget-mini__play-btn" onclick="toggle('mn')"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
