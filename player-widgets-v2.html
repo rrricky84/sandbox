@@ -27,7 +27,7 @@
     --radius-sm: 4px;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --surface-primary: #1a1d2a;
       --surface-secondary: #e8e9ed;
       --surface-tertiary: #2a2d3a;
@@ -49,17 +49,6 @@
     --border-secondary: #3a3d4a;
     --core-disabled: #9398ab;
     --core-subtle: #3a3d4a;
-  }
-  :root[data-theme="light"] {
-    --surface-primary: #ffffff;
-    --surface-secondary: #171c2b;
-    --surface-tertiary: #f4f4f5;
-    --surface-page: #ececee;
-    --text-primary: #171c2b;
-    --text-secondary: #61667a;
-    --border-secondary: #d2d3d7;
-    --core-disabled: #61667a;
-    --core-subtle: #d2d3d7;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -142,6 +131,8 @@
     color: var(--core-disabled);
   }
   .mc-logo--white { color: #ffffff; }
+  .mc-logo .logo-mark { display: none; }
+  .mc-logo .logo-wordmark { display: block; }
 
   .audio-bars {
     display: flex;
@@ -214,7 +205,9 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding-left: 2px;
   }
+  .widget-classic__play-btn .icon-pause { padding-left: 0; }
   .widget-classic__info {
     flex: 1;
     min-width: 0;
@@ -265,26 +258,39 @@
   }
   .widget-classic.is-playing .widget-classic__progress-filled { width: 64px; }
 
-  .widget-classic__bottom-row {
+  .widget-classic__bottom-default {
     display: flex;
     align-items: center;
     gap: 12px;
     padding: 12px 16px;
     flex-shrink: 0;
   }
+  .widget-classic__bottom-playing {
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px;
+    flex-shrink: 0;
+  }
+  .widget-classic__bottom-playing-timer-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .widget-classic__bottom-playing-track-row {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .widget-classic.is-playing .widget-classic__bottom-default { display: none; }
+  .widget-classic.is-playing .widget-classic__bottom-playing { display: flex; }
+
   .widget-classic__timer {
     font-size: 11px;
     font-weight: 500;
     color: var(--text-secondary);
     white-space: nowrap;
     flex-shrink: 0;
-  }
-  .widget-classic__track-id {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-    min-width: 0;
   }
   .widget-classic__track-id-text {
     font-size: 11px;
@@ -304,9 +310,10 @@
   }
   .widget-classic__action-btn {
     flex: 1;
-    border: 1px solid var(--border-secondary);
+    border-left: 1px solid var(--border-secondary);
     border-right: none;
     border-top: none;
+    border-bottom: none;
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -315,16 +322,9 @@
     color: var(--text-primary);
     cursor: pointer;
   }
-  .widget-classic__action-btn:first-child { border-top: 1px solid var(--border-secondary); }
-
-  .widget-classic .state-default { display: contents; }
-  .widget-classic .state-playing { display: none; }
-  .widget-classic .icon-play { display: block; }
-  .widget-classic .icon-pause { display: none; }
-  .widget-classic.is-playing .state-default { display: none; }
-  .widget-classic.is-playing .state-playing { display: contents; }
-  .widget-classic.is-playing .icon-play { display: none; }
-  .widget-classic.is-playing .icon-pause { display: block; }
+  .widget-classic__action-btn + .widget-classic__action-btn {
+    border-top: 1px solid var(--border-secondary);
+  }
 
   .widget-classic__share {
     display: none;
@@ -408,6 +408,10 @@
   @container (max-width: 500px) {
     .widget-classic__actions { display: none; }
   }
+  @container (max-width: 400px) {
+    .mc-logo .logo-wordmark { display: none; }
+    .mc-logo .logo-mark { display: block; }
+  }
 
   /* ===========================
      MINI (shared: w/ image & w/o image)
@@ -437,16 +441,18 @@
     padding: 0 16px;
   }
   .widget-mini__play-btn {
-    width: 20px;
-    height: 20px;
+    width: 35px;
+    height: 35px;
+    border-radius: 100px;
     flex-shrink: 0;
     border: none;
-    background: transparent;
-    color: var(--text-primary);
+    background: var(--surface-secondary);
+    color: var(--surface-primary);
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    padding-left: 2px;
   }
   .widget-mini__pause-btn {
     width: 24px;
@@ -493,7 +499,7 @@
   .follow-link { color: var(--text-primary); font-weight: 500; cursor: pointer; }
 
   .widget-mini__playing-block {
-    display: flex;
+    display: none;
     flex-direction: column;
     flex: 1;
     min-width: 0;
@@ -557,9 +563,10 @@
   }
   .widget-mini__action-btn {
     flex: 1;
-    border: 1px solid var(--border-secondary);
+    border-left: 1px solid var(--border-secondary);
     border-right: none;
     border-top: none;
+    border-bottom: none;
     padding: 0 16px;
     display: flex;
     align-items: center;
@@ -568,14 +575,16 @@
     color: var(--text-primary);
     cursor: pointer;
   }
-  .widget-mini__action-btn:first-child { border-top: 1px solid var(--border-secondary); }
+  .widget-mini__action-btn + .widget-mini__action-btn {
+    border-top: 1px solid var(--border-secondary);
+  }
 
-  .widget-mini .state-default { display: contents; }
-  .widget-mini .state-playing { display: none; }
+  .widget-mini__default-row { display: flex; }
+  .widget-mini.is-playing .widget-mini__default-row { display: none; }
+  .widget-mini.is-playing .widget-mini__playing-block { display: flex; }
+
   .widget-mini .icon-play { display: block; }
   .widget-mini .icon-pause { display: none; }
-  .widget-mini.is-playing .state-default { display: none; }
-  .widget-mini.is-playing .state-playing { display: contents; }
   .widget-mini.is-playing .icon-play { display: none; }
   .widget-mini.is-playing .icon-pause { display: block; }
 
@@ -608,10 +617,12 @@
     background: var(--surface-primary);
     display: flex;
     flex-direction: column;
+    max-height: 80vh;
   }
   .widget-picture__image-area {
     position: relative;
-    aspect-ratio: 16 / 10;
+    flex: 1 1 auto;
+    min-height: 200px;
     background: linear-gradient(180deg, #8fb8c7 0%, #c5d5d0 30%, #e8ddd5 60%, #d4c5b5 100%);
     overflow: hidden;
   }
@@ -621,18 +632,17 @@
     align-items: flex-start;
     justify-content: center;
   }
-  :root[data-theme="dark"] .widget-picture--color .widget-picture__image-area,
-  :root:not([data-theme="light"]) .widget-picture--color .widget-picture__image-area { background: #8a7a5a; }
   @media (prefers-color-scheme: dark) {
-    .widget-picture--color .widget-picture__image-area { background: #6a5a3a; }
+    :root:not([data-theme="light"]) .widget-picture--color .widget-picture__image-area { background: #6a5a3a; }
   }
   :root[data-theme="dark"] .widget-picture--color .widget-picture__image-area { background: #6a5a3a; }
   :root[data-theme="light"] .widget-picture--color .widget-picture__image-area { background: #8a7a5a; }
 
   .widget-picture--color .widget-picture__artwork-inset {
     width: 60%;
+    max-width: 400px;
     margin-top: 32px;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 1 / 1;
     border-radius: 4px;
     background: linear-gradient(135deg, #90c5d0 0%, #d4c5b0 50%, #b0a090 100%);
   }
@@ -649,11 +659,16 @@
     justify-content: flex-end;
     padding: 16px;
   }
-  .widget-picture__bottom {
+  .widget-picture__bottom-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 24px;
+  }
+  .widget-picture__main-row {
     display: flex;
     align-items: center;
     gap: 16px;
-    padding: 24px;
   }
   .widget-picture__play-btn {
     width: 52px;
@@ -668,7 +683,9 @@
     justify-content: center;
     cursor: pointer;
     backdrop-filter: blur(4px);
+    padding-left: 3px;
   }
+  .widget-picture__play-btn .icon-pause { padding-left: 0; margin-left: -3px; }
   .widget-picture__text-block { min-width: 0; }
   .widget-picture__title {
     color: #ffffff;
@@ -681,6 +698,44 @@
     font-size: 14px;
     margin-top: 4px;
   }
+  .widget-picture__actions-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-top: 8px;
+  }
+  .widget-picture__actions-icons {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: #ffffff;
+    flex-shrink: 0;
+  }
+  .widget-picture__actions-icons .icon-btn { color: #ffffff; }
+  .widget-picture__actions-track-id {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+  }
+  .widget-picture__actions-track-id-text {
+    font-size: 11px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .widget-picture__actions-timer {
+    font-size: 11px;
+    font-weight: 500;
+    color: #ffffff;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-left: auto;
+  }
+
   .widget-picture__progress-track {
     display: flex;
     align-items: center;
@@ -700,75 +755,28 @@
     min-width: 0;
   }
   .widget-picture.is-playing .widget-picture__progress-filled { width: 64px; }
-  .widget-picture__footer {
-    background: #171c2b;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .widget-picture__footer-icons {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    color: #ffffff;
-    flex-shrink: 0;
-  }
-  .widget-picture__footer-icons .icon-btn { color: #ffffff; }
-  .widget-picture__footer-track-id {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-    min-width: 0;
-  }
-  .widget-picture__footer-track-id-text {
-    font-size: 11px;
-    font-weight: 500;
-    color: rgba(255,255,255,0.6);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  .widget-picture__footer-timer {
-    font-size: 11px;
-    font-weight: 500;
-    color: #ffffff;
-    white-space: nowrap;
-    flex-shrink: 0;
-    margin-left: auto;
-  }
+  .widget-picture.is-playing .widget-picture__actions-track-id { display: flex; }
 
-  .widget-picture .state-default { display: contents; }
-  .widget-picture .state-playing { display: none; }
   .widget-picture .icon-play { display: block; }
   .widget-picture .icon-pause { display: none; }
-  .widget-picture.is-playing .state-default { display: none; }
-  .widget-picture.is-playing .state-playing { display: contents; }
   .widget-picture.is-playing .icon-play { display: none; }
   .widget-picture.is-playing .icon-pause { display: block; }
 </style>
 
 <!-- SVG icon definitions -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <!-- Play: classic (inside 35px circle, white) -->
+  <!-- Play: classic/mini (inside 35px circle) -->
   <symbol id="mc-play-sm" viewBox="0 0 13.125 14.914"><path d="M13.124 5.91L13.125 9.05L2.994 14.914L0 13.848V1.387L2.91 0L13.124 5.91Z" fill="currentColor"/></symbol>
-  <!-- Play: mini (standalone, dark) -->
-  <symbol id="mc-play-md" viewBox="0 0 18.001 20.453"><path d="M17.998 8.104L18.001 12.411L4.107 20.453L0 18.99V1.902L3.99 0L17.998 8.104Z" fill="currentColor"/></symbol>
-  <!-- Play: picture (inside 52px circle, white) -->
+  <!-- Play: picture (inside 52px circle) -->
   <symbol id="mc-play-lg" viewBox="0 0 16.5 18.749"><path d="M16.498 7.43L16.5 11.378L3.765 18.749L0 17.408V1.744L3.658 0L16.498 7.43Z" fill="currentColor"/></symbol>
-  <!-- Pause: classic (inside circle, white) -->
+  <!-- Pause: classic (inside circle) -->
   <symbol id="mc-pause-sm" viewBox="0 0 9.167 18.333"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.75 0H0V18.333H2.75V0ZM9.167 0H6.417V18.333H9.167V0Z" fill="currentColor"/></symbol>
   <!-- Pause: mini/picture (standalone) -->
   <symbol id="mc-pause-md" viewBox="0 0 10 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H0V20H3V0ZM10 0H7V20H10V0Z" fill="currentColor"/></symbol>
-  <!-- Heart outline: small (action buttons) -->
-  <symbol id="mc-heart" viewBox="0 0 13.334 13.333"><path d="M7.633.645C8.771-.187 9.999-.228 11.265.605c2.617 1.718 2.617 5.131.753 7.098L6.666 13.333l-.975-1.026L6.667 11.333l4.384-4.55c1.376-1.449 1.305-3.865-.52-5.065-.578-.381-.867-.354-1.2-.354-1.5 0-2.529 1.454-3 2.454H5.999c-.314-1-1.314-2.454-2.54-2.454-.261 0-1.19-.04-2.06.532C-.88 2.919-.906 5.335.467 6.784l3.396 3.525-1.015 1.425L1.316 7.702C-.548 5.739-.548 2.326 2.068.605 3.334-.228 4.562-.187 5.7.645c.33.241.653.55.967 1.14.331-.59.655-.899.966-1.14Z" fill="currentColor"/></symbol>
-  <!-- Heart outline: large (picture footer) -->
-  <symbol id="mc-heart-lg" viewBox="0 0 20 20"><path d="M11.45.967C13.158-.281 14.999-.342 16.896.907c3.926 2.582 3.926 7.701 1.129 10.646L10 20l-1.463-1.538L10 17l6.576-6.824c2.064-2.174 1.959-4.798-.778-6.598C15.07 3.196 14.5 2.006 14 2.046c-1.5 0-2.529 1.454-3 2.454H9c-.471-1-1.5-2.454-2.74-2.454-.26 0-1.189-.04-2.058.532-2.737 1.8-2.842 4.423-.778 6.598L8.518 15.463 7.042 16.887 1.974 11.554C-.822 8.608-.823 3.489 3.102.907 5 -.342 6.842-.281 8.55.967c.495.362.98.824 1.45 1.382.471-.558.955-1.02 1.45-1.382Z" fill="currentColor"/></symbol>
-  <!-- Heart filled: small -->
-  <symbol id="mc-heart-filled" viewBox="0 0 14.121 13.415"><path fill-rule="evenodd" clip-rule="evenodd" d="M6.059 12.414L7.06 13.415 12.727 7.749C14.702 5.774 14.702 2.341 11.93.609 10.201-.472 8.539-.091 7.061 1.575 5.582-.091 3.919-.472 2.191.609-.581 2.341-.581 5.774 1.394 7.749l4.665 4.665Z" fill="currentColor"/></symbol>
-  <!-- Heart filled: large -->
-  <symbol id="mc-heart-filled-lg" viewBox="0 0 21.182 20.122"><path fill-rule="evenodd" clip-rule="evenodd" d="M9.089 18.621L10.59 20.122 19.091 11.624C22.053 8.661 22.053 3.511 17.895.913 15.302-.708 12.809-.137 10.591 2.363 8.373-.137 5.879-.708 3.286.913-.871 3.511-.871 8.661 2.091 11.624l7.0-7.003Z" fill="currentColor"/></symbol>
+  <!-- Heart outline (Material Design, clean render) -->
+  <symbol id="mc-heart" viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" fill="currentColor"/></symbol>
+  <!-- Heart filled -->
+  <symbol id="mc-heart-filled" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></symbol>
   <!-- Share: small -->
   <symbol id="mc-share" viewBox="0 0 13.334 13.334"><path d="M1.334 12H12V8h1.334v4.667l-.667.667H.667L0 12.667V8h1.334v4Zm6.048-12 3.332 5.45-1.238.403L7.334 2.445v6.891H6V2.445L3.858 5.853 2.62 5.45 5.952 0h1.43Z" fill="currentColor"/></symbol>
   <!-- Share: large -->
@@ -777,10 +785,10 @@
   <symbol id="mc-follow" viewBox="0 0 13.333 13.333"><path d="M3.97 8.2L1.688 12H8v1.333H0V12v-.052l2.56-4.151 1.41.403ZM11.333 8.667h2v1.333h-2V12H10v-2H8V8.667h2V6.667h1.333v2ZM6.637 0c1.838 0 3.333 1.495 3.333 3.333 0 1.838-1.495 3.334-3.333 3.334-1.838 0-3.334-1.496-3.334-3.334C3.303 1.495 4.799 0 6.637 0Zm0 1.333c-1.103 0-2 .898-2 2s.897 2 2 2 2-.898 2-2-.897-2-2-2Z" fill="currentColor"/></symbol>
   <!-- Follow: large -->
   <symbol id="mc-follow-lg" viewBox="0 0 20 20"><path d="M5.955 12.301L2.531 18H12v2H0v-2-.077l3.841-6.228 2.114.606ZM17 13h3v2h-3v3h-2v-3h-3v-2h3v-3h2v3ZM9.955 0c2.757 0 5 2.243 5 5s-2.243 5-5 5c-2.757 0-5-2.243-5-5s2.243-5 5-5Zm0 2c-1.654 0-3 1.346-3 3s1.346 3 3 3 3-1.346 3-3-1.346-3-3-3Z" fill="currentColor"/></symbol>
-  <!-- Mixcloud logo: small (68x8, for bottom rows) -->
-  <symbol id="mc-logo-sm" viewBox="0 0 68 8"><path fill-rule="evenodd" clip-rule="evenodd" d="M29.756 3.995c0-1.711.9-2.76 2.44-2.76 1.231 0 2.089.662 2.264 1.875h1.418c-.29-2.401-1.746-3.778-3.682-3.778-2.384 0-3.83 1.731-3.83 3.863s1.446 4.006 3.83 4.006c2.104 0 3.558-1.19 3.878-3.122h-1.46c-.222 1.214-.881 1.887-1.924 1.887-1.539 0-2.934-1.049-2.934-2.97Zm13.872 1.646v1.36l-5.72.999c-.527.011-.801-.303-.801-.83V.11h1.417v5.805c0 .005-.001.01-.001.016-.013.207-.068.31-.132.346l-.187.026.128.304.032-.011.55-.103 5.714-1.007ZM9.09 7.89H7.673V1.4l.264-.92H7.48l-1.627 7.41H3.248L1.61.48H1.164l.253.92V7.89H0V.11h2.802L4.363 7.527h.363L6.288.11H9.09v7.78Zm23.772-.668v1.636l-3.685-2.66h-.395l-3.67 2.66V6.218l3.113-2.218-3.113-2.218V.149l3.67 2.66h.395l3.685-2.66v1.633l-3.13 2.218 3.13 2.222ZM10.59 4.708h7.788V3.292H10.59v1.416ZM63.922.11c1.993 0 4.5.54 4.5 3.885S65.915 7.89 63.922 7.89h-2.704V.11h2.704Zm0 6.545c1.344 0 2.642-.166 2.642-2.66 0-2.483-1.298-2.65-2.642-2.65h-.884c-.01-.001-.024-.003-.039-.004a.552.552 0 0 1-.089-.01.638.638 0 0 1-.223-.2l-.296-.312-.248.247.085.099c.124.084.247.213.305.4.012.064.021.135.023.214V5.945a1.08 1.08 0 0 1-.127.746.808.808 0 0 1-.514.293l-.087.099.248.248.296-.189c.132-.077.272-.12.539-.117l.042-.002h.604l.317.002-.317-.325Zm-4.018-1.656V.11h-1.424v4.36c0 1.467-.299 2.136-1.92 2.136s-1.922-.669-1.922-2.137V.11h-1.425v4.89c0 1.941 1.101 3.2 3.347 3.2s3.344-1.259 3.344-3.2Zm-11.585-5c2.387 0 4.005 1.731 4.005 3.996s-1.618 4.005-4.005 4.005-4.024-1.74-4.024-4.005S45.932 0 48.32 0Zm0 6.765c1.61 0 2.403-1.125 2.403-2.77s-.793-2.76-2.403-2.76-2.408 1.114-2.408 2.76.798 2.77 2.408 2.77Z" fill="currentColor"/></symbol>
-  <!-- Mixcloud logo: large (171x20, for picture widget) -->
-  <symbol id="mc-logo-lg" viewBox="0 0 171 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M74.827 9.986c0-4.278 2.267-6.899 6.137-6.899 3.096 0 5.252 1.656 5.694 4.692h3.566c-.58-4.802-4.036-7.779-9.316-7.779C75.91 0 72.264 4.329 72.264 9.986c0 5.685 3.645 10.014 9.644 10.014 5.28 0 8.735-2.977 9.316-7.806h-3.566c-.442 3.036-2.599 4.719-5.694 4.719-3.87 0-6.137-2.622-6.137-6.927Zm34.884 4.117v3.399l-14.307 2.497c-1.326.027-2.099-.717-2.099-2.04V.275h3.562v14.512a.96.96 0 0 1-.002.044c-.002.007-.003.014-.004.021-.323.517-.71.774-1.124.864l-.467.065.322.76.08-.027v.002l1.383-.259 12.656-2.153ZM22.858 19.724h-3.563V3.501l.663-2.318h-1.15L14.717 19.724H8.169L4.049 1.183H2.927l.636 2.318v16.223H0V.276h7.046l3.927 18.541h.912L15.81.276h7.047v19.448Zm45.828-4.18v4.083l-9.259-6.649h-.995l-9.231 6.649V15.544l7.822-5.544-7.822-5.544V.372l9.231 6.677h.995l9.259-6.677v4.083l-7.85 5.545 7.85 5.544ZM26.628 11.77h19.537V8.23H26.628v3.54Zm134.117-11.494c5.006 0 10.255 1.35 10.255 9.71s-5.249 9.738-10.255 9.738h-6.799V.276h6.799Zm0 16.362c3.457 0 6.72-.415 6.72-6.651 0-6.21-3.263-6.624-6.72-6.624h-2.223a1.2 1.2 0 0 0-.098-.008c-.081-.007-.176-.014-.223-.022a1.47 1.47 0 0 1-.514-.201l-.743-.472-.62.619.433.247c.001 0 .001.001.001.001.31.211.555.53.694 1.001.031.16.052.337.056.535v9.8c0 .325-.04.598-.108.828-.144.387-.367.661-.641.848l-.001.002-.433.247.62.619.743-.473c.329-.193.681-.3 1.35-.293l.104-.003h1.604Zm-10.103-2.14V.276h-3.562v10.898c0 3.67-.748 5.739-4.813 5.739s-4.811-2.07-4.811-5.739V.276h-3.563v12.223c0 4.855 2.762 7.501 8.374 7.501s8.375-2.646 8.375-7.501ZM121.519 0c5.973 0 9.591 4.329 9.591 9.986 0 5.685-3.618 10.014-9.591 10.014-6 0-9.619-4.329-9.619-10.014S115.519 0 121.519 0Zm-.001 16.913c4.037 0 6.029-2.815 6.029-6.927 0-4.084-1.992-6.899-6.029-6.899s-6.054 2.815-6.054 6.899c0 4.112 2.017 6.927 6.054 6.927Z" fill="currentColor"/></symbol>
+  <!-- Mixcloud wordmark -->
+  <symbol id="mc-logo-wordmark" viewBox="0 0 171 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M74.827 9.986c0-4.278 2.267-6.899 6.137-6.899 3.096 0 5.252 1.656 5.694 4.692h3.566c-.58-4.802-4.036-7.779-9.316-7.779C75.91 0 72.264 4.329 72.264 9.986c0 5.685 3.645 10.014 9.644 10.014 5.28 0 8.735-2.977 9.316-7.806h-3.566c-.442 3.036-2.599 4.719-5.694 4.719-3.87 0-6.137-2.622-6.137-6.927Zm34.884 4.117v3.399l-14.307 2.497c-1.326.027-2.099-.717-2.099-2.04V.275h3.562v14.512a.96.96 0 0 1-.002.044c-.002.007-.003.014-.004.021-.323.517-.71.774-1.124.864l-.467.065.322.76.08-.027v.002l1.383-.259 12.656-2.153ZM22.858 19.724h-3.563V3.501l.663-2.318h-1.15L14.717 19.724H8.169L4.049 1.183H2.927l.636 2.318v16.223H0V.276h7.046l3.927 18.541h.912L15.81.276h7.047v19.448Zm45.828-4.18v4.083l-9.259-6.649h-.995l-9.231 6.649V15.544l7.822-5.544-7.822-5.544V.372l9.231 6.677h.995l9.259-6.677v4.083l-7.85 5.545 7.85 5.544ZM26.628 11.77h19.537V8.23H26.628v3.54Zm134.117-11.494c5.006 0 10.255 1.35 10.255 9.71s-5.249 9.738-10.255 9.738h-6.799V.276h6.799Zm0 16.362c3.457 0 6.72-.415 6.72-6.651 0-6.21-3.263-6.624-6.72-6.624h-2.223a1.2 1.2 0 0 0-.098-.008c-.081-.007-.176-.014-.223-.022a1.47 1.47 0 0 1-.514-.201l-.743-.472-.62.619.433.247c.001 0 .001.001.001.001.31.211.555.53.694 1.001.031.16.052.337.056.535v9.8c0 .325-.04.598-.108.828-.144.387-.367.661-.641.848l-.001.002-.433.247.62.619.743-.473c.329-.193.681-.3 1.35-.293l.104-.003h1.604Zm-10.103-2.14V.276h-3.562v10.898c0 3.67-.748 5.739-4.813 5.739s-4.811-2.07-4.811-5.739V.276h-3.563v12.223c0 4.855 2.762 7.501 8.374 7.501s8.375-2.646 8.375-7.501ZM121.519 0c5.973 0 9.591 4.329 9.591 9.986 0 5.685-3.618 10.014-9.591 10.014-6 0-9.619-4.329-9.619-10.014S115.519 0 121.519 0Zm-.001 16.913c4.037 0 6.029-2.815 6.029-6.927 0-4.084-1.992-6.899-6.029-6.899s-6.054 2.815-6.054 6.899c0 4.112 2.017 6.927 6.054 6.927Z" fill="currentColor"/></symbol>
+  <!-- Mixcloud short mark (M—X) -->
+  <symbol id="mc-logo-mark" viewBox="0 0 113 32"><path fill-rule="evenodd" clip-rule="evenodd" d="M19.554 30.508 26.012 0h11.593v32h-5.861V5.306l1.09-3.814h-1.89L24.211 32H13.44L6.66 1.492H4.817L5.86 5.306V32H0V0h11.593l6.46 30.508zm78.214-19.363H96.13L80.944.16v6.718L93.812 16l-12.868 9.123v6.719L96.13 20.9h1.637L113 31.842v-6.719L100.087 16 113 6.876V.16zm-53.96 7.768H75.95v-5.825H43.81v5.825Z" fill="currentColor"/></symbol>
 </svg>
 
 <div class="page">
@@ -821,13 +829,20 @@
                 </div>
               </div>
             </div>
-            <div class="widget-classic__bottom-row">
+            <div class="widget-classic__bottom-default">
               <span class="widget-classic__timer">01:00:02 / -2:59:39</span>
-              <div class="state-playing widget-classic__track-id">
+              <span class="mc-logo" style="margin-left:auto;"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
+            </div>
+            <div class="widget-classic__bottom-playing">
+              <div class="widget-classic__bottom-playing-timer-row">
+                <span class="widget-classic__timer">01:00:03</span>
+                <span class="widget-classic__timer" style="margin-left:auto;">02:59:39</span>
+                <span class="mc-logo" style="margin-left:12px;"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
+              </div>
+              <div class="widget-classic__bottom-playing-track-row">
                 <span class="audio-bars"><span></span><span></span><span></span></span>
                 <span class="widget-classic__track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
               </div>
-              <span class="mc-logo" style="margin-left:auto;"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
             </div>
           </div>
           <div class="widget-classic__share">
@@ -859,7 +874,7 @@
           <button class="widget-classic__action-btn" onclick="toggleShare('cw')"><svg width="13" height="13"><use href="#mc-share"/></svg></button>
           <button class="widget-classic__action-btn" onclick="toggleFav(this)">
             <span class="heart-outline"><svg width="13" height="13"><use href="#mc-heart"/></svg></span>
-            <span class="heart-filled"><svg width="14" height="13"><use href="#mc-heart-filled"/></svg></span>
+            <span class="heart-filled"><svg width="13" height="13"><use href="#mc-heart-filled"/></svg></span>
           </button>
           <button class="widget-classic__action-btn"><svg width="13" height="13"><use href="#mc-follow"/></svg></button>
         </div>
@@ -892,13 +907,20 @@
                 </div>
               </div>
             </div>
-            <div class="widget-classic__bottom-row">
+            <div class="widget-classic__bottom-default">
               <span class="widget-classic__timer">01:00:02 / -2:59:39</span>
-              <div class="state-playing widget-classic__track-id">
+              <span class="mc-logo" style="margin-left:auto;"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
+            </div>
+            <div class="widget-classic__bottom-playing">
+              <div class="widget-classic__bottom-playing-timer-row">
+                <span class="widget-classic__timer">01:00:03</span>
+                <span class="widget-classic__timer" style="margin-left:auto;">02:59:39</span>
+                <span class="mc-logo" style="margin-left:12px;"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
+              </div>
+              <div class="widget-classic__bottom-playing-track-row">
                 <span class="audio-bars"><span></span><span></span><span></span></span>
                 <span class="widget-classic__track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
               </div>
-              <span class="mc-logo" style="margin-left:auto;"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
             </div>
           </div>
           <div class="widget-classic__share">
@@ -930,7 +952,7 @@
           <button class="widget-classic__action-btn" onclick="toggleShare('cn')"><svg width="13" height="13"><use href="#mc-share"/></svg></button>
           <button class="widget-classic__action-btn" onclick="toggleFav(this)">
             <span class="heart-outline"><svg width="13" height="13"><use href="#mc-heart"/></svg></span>
-            <span class="heart-filled"><svg width="14" height="13"><use href="#mc-heart-filled"/></svg></span>
+            <span class="heart-filled"><svg width="13" height="13"><use href="#mc-heart-filled"/></svg></span>
           </button>
           <button class="widget-classic__action-btn"><svg width="13" height="13"><use href="#mc-follow"/></svg></button>
         </div>
@@ -946,15 +968,15 @@
         <div class="widget-mini__artwork-wrap"><div class="widget-mini__artwork"></div></div>
         <div class="widget-mini__center">
           <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
-            <div class="state-default widget-mini__default-row">
-              <button class="widget-mini__play-btn" onclick="toggle('mw')"><svg width="18" height="20"><use href="#mc-play-md"/></svg></button>
+            <div class="widget-mini__default-row">
+              <button class="widget-mini__play-btn" onclick="toggle('mw')"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
                 <div class="widget-mini__title">This Is Graeme Park: Long Live House Radio Show 18 NOV24</div>
                 <div class="widget-mini__byline"><span>by Official Rave archive</span><span class="follow-link">Follow</span></div>
               </div>
-              <span class="mc-logo"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
+              <span class="mc-logo"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
             </div>
-            <div class="state-playing widget-mini__playing-block">
+            <div class="widget-mini__playing-block">
               <div class="widget-mini__progress-row">
                 <button class="widget-mini__pause-btn" onclick="toggle('mw')"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></button>
                 <span class="widget-mini__time">01:00:03</span>
@@ -963,7 +985,7 @@
                   <div class="widget-mini__progress-remaining"></div>
                 </div>
                 <span class="widget-mini__time">02:59:39</span>
-                <span class="mc-logo"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
+                <span class="mc-logo"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
               </div>
               <div class="widget-mini__track-id">
                 <span class="audio-bars"><span></span><span></span><span></span></span>
@@ -992,7 +1014,7 @@
           <button class="widget-mini__action-btn" onclick="toggleShare('mw')"><svg width="13" height="13"><use href="#mc-share"/></svg></button>
           <button class="widget-mini__action-btn" onclick="toggleFav(this)">
             <span class="heart-outline"><svg width="13" height="13"><use href="#mc-heart"/></svg></span>
-            <span class="heart-filled"><svg width="14" height="13"><use href="#mc-heart-filled"/></svg></span>
+            <span class="heart-filled"><svg width="13" height="13"><use href="#mc-heart-filled"/></svg></span>
           </button>
         </div>
       </div>
@@ -1006,15 +1028,15 @@
       <div id="mn" class="widget widget-mini">
         <div class="widget-mini__center">
           <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
-            <div class="state-default widget-mini__default-row">
-              <button class="widget-mini__play-btn" onclick="toggle('mn')"><svg width="18" height="20"><use href="#mc-play-md"/></svg></button>
+            <div class="widget-mini__default-row">
+              <button class="widget-mini__play-btn" onclick="toggle('mn')"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
                 <div class="widget-mini__title">This Is Graeme Park: Long Live House Radio Show 18 NOV24</div>
                 <div class="widget-mini__byline"><span>by Official Rave archive</span><span class="follow-link">Follow</span></div>
               </div>
-              <span class="mc-logo"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
+              <span class="mc-logo"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
             </div>
-            <div class="state-playing widget-mini__playing-block">
+            <div class="widget-mini__playing-block">
               <div class="widget-mini__progress-row">
                 <button class="widget-mini__pause-btn" onclick="toggle('mn')"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></button>
                 <span class="widget-mini__time">01:00:03</span>
@@ -1023,7 +1045,7 @@
                   <div class="widget-mini__progress-remaining"></div>
                 </div>
                 <span class="widget-mini__time">02:59:39</span>
-                <span class="mc-logo"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span>
+                <span class="mc-logo"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span>
               </div>
               <div class="widget-mini__track-id">
                 <span class="audio-bars"><span></span><span></span><span></span></span>
@@ -1052,7 +1074,7 @@
           <button class="widget-mini__action-btn" onclick="toggleShare('mn')"><svg width="13" height="13"><use href="#mc-share"/></svg></button>
           <button class="widget-mini__action-btn" onclick="toggleFav(this)">
             <span class="heart-outline"><svg width="13" height="13"><use href="#mc-heart"/></svg></span>
-            <span class="heart-filled"><svg width="14" height="13"><use href="#mc-heart-filled"/></svg></span>
+            <span class="heart-filled"><svg width="13" height="13"><use href="#mc-heart-filled"/></svg></span>
           </button>
         </div>
       </div>
@@ -1066,15 +1088,32 @@
       <div id="pf" class="widget widget-picture">
         <div class="widget-picture__image-area">
           <div class="widget-picture__overlay">
-            <div class="widget-picture__logo-row"><span class="mc-logo mc-logo--white"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span></div>
-            <div class="widget-picture__bottom">
-              <button class="widget-picture__play-btn" onclick="toggle('pf')">
-                <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
-                <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
-              </button>
-              <div class="widget-picture__text-block">
-                <div class="widget-picture__title">LoungeCast #52 Minerva w/MF DOOM Joy Orbison Fila Brazillia Faithless Massive Attack Tycho Teen Daze</div>
-                <div class="widget-picture__byline">by Secret Sound Service</div>
+            <div class="widget-picture__logo-row"><span class="mc-logo mc-logo--white"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span></div>
+            <div class="widget-picture__bottom-content">
+              <div class="widget-picture__main-row">
+                <button class="widget-picture__play-btn" onclick="toggle('pf')">
+                  <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
+                  <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
+                </button>
+                <div class="widget-picture__text-block">
+                  <div class="widget-picture__title">LoungeCast #52 Minerva w/MF DOOM Joy Orbison Fila Brazillia Faithless Massive Attack Tycho Teen Daze</div>
+                  <div class="widget-picture__byline">by Secret Sound Service</div>
+                </div>
+              </div>
+              <div class="widget-picture__actions-row">
+                <div class="widget-picture__actions-icons">
+                  <button class="icon-btn" onclick="toggleFav(this)">
+                    <span class="heart-outline"><svg width="20" height="20"><use href="#mc-heart"/></svg></span>
+                    <span class="heart-filled"><svg width="20" height="20"><use href="#mc-heart-filled"/></svg></span>
+                  </button>
+                  <button class="icon-btn"><svg width="20" height="20"><use href="#mc-share-lg"/></svg></button>
+                  <button class="icon-btn"><svg width="20" height="20"><use href="#mc-follow-lg"/></svg></button>
+                </div>
+                <div class="widget-picture__actions-track-id">
+                  <span class="audio-bars audio-bars--white"><span></span><span></span><span></span></span>
+                  <span class="widget-picture__actions-track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
+                </div>
+                <span class="widget-picture__actions-timer">01:00:02 / -2:59:39</span>
               </div>
             </div>
           </div>
@@ -1082,21 +1121,6 @@
         <div class="widget-picture__progress-track">
           <div class="widget-picture__progress-filled"></div>
           <div class="widget-picture__progress-remaining"></div>
-        </div>
-        <div class="widget-picture__footer">
-          <div class="widget-picture__footer-icons">
-            <button class="icon-btn" onclick="toggleFav(this)">
-              <span class="heart-outline"><svg width="20" height="20"><use href="#mc-heart-lg"/></svg></span>
-              <span class="heart-filled"><svg width="21" height="20"><use href="#mc-heart-filled-lg"/></svg></span>
-            </button>
-            <button class="icon-btn"><svg width="20" height="20"><use href="#mc-share-lg"/></svg></button>
-            <button class="icon-btn"><svg width="20" height="20"><use href="#mc-follow-lg"/></svg></button>
-          </div>
-          <div class="state-playing widget-picture__footer-track-id">
-            <span class="audio-bars audio-bars--white"><span></span><span></span><span></span></span>
-            <span class="widget-picture__footer-track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
-          </div>
-          <span class="widget-picture__footer-timer">01:00:02 / -2:59:39</span>
         </div>
       </div>
     </div>
@@ -1110,15 +1134,32 @@
         <div class="widget-picture__image-area">
           <div class="widget-picture__artwork-inset"></div>
           <div class="widget-picture__overlay">
-            <div class="widget-picture__logo-row"><span class="mc-logo mc-logo--white"><svg width="68" height="8"><use href="#mc-logo-sm"/></svg></span></div>
-            <div class="widget-picture__bottom">
-              <button class="widget-picture__play-btn" onclick="toggle('pc')">
-                <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
-                <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
-              </button>
-              <div class="widget-picture__text-block">
-                <div class="widget-picture__title">LoungeCast #52 Minerva w/MF DOOM Joy Orbison Fila Brazillia Faithless Massive Attack Tycho Teen Daze</div>
-                <div class="widget-picture__byline">by Secret Sound Service</div>
+            <div class="widget-picture__logo-row"><span class="mc-logo mc-logo--white"><svg class="logo-wordmark" width="68" height="8"><use href="#mc-logo-wordmark"/></svg><svg class="logo-mark" width="14" height="8"><use href="#mc-logo-mark"/></svg></span></div>
+            <div class="widget-picture__bottom-content">
+              <div class="widget-picture__main-row">
+                <button class="widget-picture__play-btn" onclick="toggle('pc')">
+                  <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
+                  <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
+                </button>
+                <div class="widget-picture__text-block">
+                  <div class="widget-picture__title">LoungeCast #52 Minerva w/MF DOOM Joy Orbison Fila Brazillia Faithless Massive Attack Tycho Teen Daze</div>
+                  <div class="widget-picture__byline">by Secret Sound Service</div>
+                </div>
+              </div>
+              <div class="widget-picture__actions-row">
+                <div class="widget-picture__actions-icons">
+                  <button class="icon-btn" onclick="toggleFav(this)">
+                    <span class="heart-outline"><svg width="20" height="20"><use href="#mc-heart"/></svg></span>
+                    <span class="heart-filled"><svg width="20" height="20"><use href="#mc-heart-filled"/></svg></span>
+                  </button>
+                  <button class="icon-btn"><svg width="20" height="20"><use href="#mc-share-lg"/></svg></button>
+                  <button class="icon-btn"><svg width="20" height="20"><use href="#mc-follow-lg"/></svg></button>
+                </div>
+                <div class="widget-picture__actions-track-id">
+                  <span class="audio-bars audio-bars--white"><span></span><span></span><span></span></span>
+                  <span class="widget-picture__actions-track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
+                </div>
+                <span class="widget-picture__actions-timer">01:00:02 / -2:59:39</span>
               </div>
             </div>
           </div>
@@ -1126,21 +1167,6 @@
         <div class="widget-picture__progress-track">
           <div class="widget-picture__progress-filled"></div>
           <div class="widget-picture__progress-remaining"></div>
-        </div>
-        <div class="widget-picture__footer">
-          <div class="widget-picture__footer-icons">
-            <button class="icon-btn" onclick="toggleFav(this)">
-              <span class="heart-outline"><svg width="20" height="20"><use href="#mc-heart-lg"/></svg></span>
-              <span class="heart-filled"><svg width="21" height="20"><use href="#mc-heart-filled-lg"/></svg></span>
-            </button>
-            <button class="icon-btn"><svg width="20" height="20"><use href="#mc-share-lg"/></svg></button>
-            <button class="icon-btn"><svg width="20" height="20"><use href="#mc-follow-lg"/></svg></button>
-          </div>
-          <div class="state-playing widget-picture__footer-track-id">
-            <span class="audio-bars audio-bars--white"><span></span><span></span><span></span></span>
-            <span class="widget-picture__footer-track-id-text">Memory Death (Extended club remix) by Boards of Canada</span>
-          </div>
-          <span class="widget-picture__footer-timer">01:00:02 / -2:59:39</span>
         </div>
       </div>
     </div>
