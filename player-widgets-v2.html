@@ -196,18 +196,15 @@
   .widget-classic__play-btn {
     width: 35px;
     height: 35px;
-    border-radius: 100px;
     flex-shrink: 0;
     border: none;
-    background: var(--surface-secondary);
-    color: var(--surface-primary);
+    background: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding-left: 2px;
   }
-  .widget-classic__play-btn .icon-pause { padding-left: 0; }
   .widget-classic__info {
     flex: 1;
     min-width: 0;
@@ -449,25 +446,22 @@
   .widget-mini__play-btn {
     width: 35px;
     height: 35px;
-    border-radius: 100px;
     flex-shrink: 0;
     border: none;
-    background: var(--surface-secondary);
-    color: var(--surface-primary);
+    background: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    padding-left: 2px;
   }
   .widget-mini__pause-btn {
     width: 35px;
     height: 35px;
-    border-radius: 100px;
     flex-shrink: 0;
     border: none;
-    background: var(--surface-secondary);
-    color: var(--surface-primary);
+    background: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -682,21 +676,17 @@
     gap: 16px;
   }
   .widget-picture__play-btn {
-    width: 52px;
-    height: 52px;
-    border-radius: 100px;
+    width: 78px;
+    height: 78px;
     flex-shrink: 0;
     border: none;
-    background: rgba(0,0,0,0.3);
-    color: #ffffff;
+    background: none;
+    padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    backdrop-filter: blur(4px);
-    padding-left: 3px;
   }
-  .widget-picture__play-btn .icon-pause { padding-left: 0; margin-left: -3px; }
   .widget-picture__text-block { min-width: 0; }
   .widget-picture__title {
     color: #ffffff;
@@ -777,14 +767,14 @@
 
 <!-- SVG icon definitions -->
 <svg xmlns="http://www.w3.org/2000/svg" style="display:none">
-  <!-- Play: classic/mini (inside 35px circle) -->
-  <symbol id="mc-play-sm" viewBox="0 0 13.125 14.914"><path d="M13.124 5.91L13.125 9.05L2.994 14.914L0 13.848V1.387L2.91 0L13.124 5.91Z" fill="currentColor"/></symbol>
-  <!-- Play: picture (inside 52px circle) -->
-  <symbol id="mc-play-lg" viewBox="0 0 16.5 18.749"><path d="M16.498 7.43L16.5 11.378L3.765 18.749L0 17.408V1.744L3.658 0L16.498 7.43Z" fill="currentColor"/></symbol>
-  <!-- Pause: classic (inside circle) -->
-  <symbol id="mc-pause-sm" viewBox="0 0 9.167 18.333"><path fill-rule="evenodd" clip-rule="evenodd" d="M2.75 0H0V18.333H2.75V0ZM9.167 0H6.417V18.333H9.167V0Z" fill="currentColor"/></symbol>
-  <!-- Pause: mini/picture (standalone) -->
-  <symbol id="mc-pause-md" viewBox="0 0 10 20"><path fill-rule="evenodd" clip-rule="evenodd" d="M3 0H0V20H3V0ZM10 0H7V20H10V0Z" fill="currentColor"/></symbol>
+  <!-- Play: classic/mini (35px circle) -->
+  <symbol id="mc-play-sm" viewBox="0 0 35 35"><circle cx="17.5" cy="17.5" r="17.5" fill="#171C2B"/><path d="M24.7905 15.9302L24.7915 19.0698L14.6606 24.9341L11.6665 23.8677V11.4067L14.5757 10.02L24.7905 15.9302Z" fill="white"/></symbol>
+  <!-- Pause: classic/mini (35px circle) -->
+  <symbol id="mc-pause-sm" viewBox="0 0 35 35"><rect width="35" height="35" rx="17.5" fill="#171C2B"/><path d="M15.8334 25.8337H13.3334V9.16675H15.8334V25.8337ZM21.6664 25.8337H19.1664V9.16675H21.6664V25.8337Z" fill="white"/></symbol>
+  <!-- Play: picture (78px circle) -->
+  <symbol id="mc-play-lg" viewBox="0 0 78 78"><circle cx="39" cy="39" r="39" fill="white"/><path d="M55.248 35.4995L55.251 42.4976L32.6738 55.5659L26 53.189V25.4204L32.4844 22.3296L55.248 35.4995Z" fill="black"/></symbol>
+  <!-- Pause: picture (78px circle) -->
+  <symbol id="mc-pause-lg" viewBox="0 0 78 78"><circle cx="39" cy="39" r="39" fill="white"/><path d="M35.75 55.2498H30.875V22.7498H35.75V55.2498ZM47.125 55.2498H42.25V22.7498H47.125V55.2498Z" fill="#1F1F1F"/></symbol>
   <!-- Heart outline (Material Design, clean render) -->
   <symbol id="mc-heart" viewBox="0 0 24 24"><path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z" fill="currentColor"/></symbol>
   <!-- Heart filled -->
@@ -826,8 +816,8 @@
             <div class="widget-classic__upper">
               <div class="widget-classic__play-row">
                 <button class="widget-classic__play-btn" onclick="toggle('cw')">
-                  <span class="icon-play"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></span>
-                  <span class="icon-pause"><svg width="9" height="18"><use href="#mc-pause-sm"/></svg></span>
+                  <span class="icon-play"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></span>
+                  <span class="icon-pause"><svg width="35" height="35"><use href="#mc-pause-sm"/></svg></span>
                 </button>
                 <div class="widget-classic__info">
                   <div class="widget-classic__title">Tributaries w/ Leon G - September 17th 2026</div>
@@ -902,8 +892,8 @@
             <div class="widget-classic__upper">
               <div class="widget-classic__play-row">
                 <button class="widget-classic__play-btn" onclick="toggle('cn')">
-                  <span class="icon-play"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></span>
-                  <span class="icon-pause"><svg width="9" height="18"><use href="#mc-pause-sm"/></svg></span>
+                  <span class="icon-play"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></span>
+                  <span class="icon-pause"><svg width="35" height="35"><use href="#mc-pause-sm"/></svg></span>
                 </button>
                 <div class="widget-classic__info">
                   <div class="widget-classic__title">Tributaries w/ Leon G - September 17th 2026</div>
@@ -977,7 +967,7 @@
         <div class="widget-mini__center">
           <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
             <div class="widget-mini__default-row">
-              <button class="widget-mini__play-btn" onclick="toggle('mw')"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></button>
+              <button class="widget-mini__play-btn" onclick="toggle('mw')"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
                 <div class="widget-mini__title">Tributaries w/ Leon G - September 17th 2026</div>
                 <div class="widget-mini__byline"><span>by Mouthfull Radio</span><span class="follow-link">Follow</span></div>
@@ -986,7 +976,7 @@
             </div>
             <div class="widget-mini__playing-block">
               <div class="widget-mini__progress-row">
-                <button class="widget-mini__pause-btn" onclick="toggle('mw')"><svg width="9" height="18"><use href="#mc-pause-sm"/></svg></button>
+                <button class="widget-mini__pause-btn" onclick="toggle('mw')"><svg width="35" height="35"><use href="#mc-pause-sm"/></svg></button>
                 <span class="widget-mini__time">01:00:03</span>
                 <div class="widget-mini__track-id">
                   <span class="audio-bars"><span></span><span></span><span></span></span>
@@ -1033,7 +1023,7 @@
         <div class="widget-mini__center">
           <div class="widget-mini__center-main" style="display:flex; align-items:center; flex:1; min-width:0;">
             <div class="widget-mini__default-row">
-              <button class="widget-mini__play-btn" onclick="toggle('mn')"><svg width="13" height="15"><use href="#mc-play-sm"/></svg></button>
+              <button class="widget-mini__play-btn" onclick="toggle('mn')"><svg width="35" height="35"><use href="#mc-play-sm"/></svg></button>
               <div class="widget-mini__info">
                 <div class="widget-mini__title">Tributaries w/ Leon G - September 17th 2026</div>
                 <div class="widget-mini__byline"><span>by Mouthfull Radio</span><span class="follow-link">Follow</span></div>
@@ -1042,7 +1032,7 @@
             </div>
             <div class="widget-mini__playing-block">
               <div class="widget-mini__progress-row">
-                <button class="widget-mini__pause-btn" onclick="toggle('mn')"><svg width="9" height="18"><use href="#mc-pause-sm"/></svg></button>
+                <button class="widget-mini__pause-btn" onclick="toggle('mn')"><svg width="35" height="35"><use href="#mc-pause-sm"/></svg></button>
                 <span class="widget-mini__time">01:00:03</span>
                 <div class="widget-mini__track-id">
                   <span class="audio-bars"><span></span><span></span><span></span></span>
@@ -1092,8 +1082,8 @@
             <div class="widget-picture__bottom-content">
               <div class="widget-picture__main-row">
                 <button class="widget-picture__play-btn" onclick="toggle('pf')">
-                  <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
-                  <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
+                  <span class="icon-play"><svg width="78" height="78"><use href="#mc-play-lg"/></svg></span>
+                  <span class="icon-pause"><svg width="78" height="78"><use href="#mc-pause-lg"/></svg></span>
                 </button>
                 <div class="widget-picture__text-block">
                   <div class="widget-picture__title">Tributaries w/ Leon G - September 17th 2026</div>
@@ -1138,8 +1128,8 @@
             <div class="widget-picture__bottom-content">
               <div class="widget-picture__main-row">
                 <button class="widget-picture__play-btn" onclick="toggle('pc')">
-                  <span class="icon-play"><svg width="17" height="19"><use href="#mc-play-lg"/></svg></span>
-                  <span class="icon-pause"><svg width="10" height="20"><use href="#mc-pause-md"/></svg></span>
+                  <span class="icon-play"><svg width="78" height="78"><use href="#mc-play-lg"/></svg></span>
+                  <span class="icon-pause"><svg width="78" height="78"><use href="#mc-pause-lg"/></svg></span>
                 </button>
                 <div class="widget-picture__text-block">
                   <div class="widget-picture__title">Tributaries w/ Leon G - September 17th 2026</div>
